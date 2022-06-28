@@ -1,0 +1,347 @@
+.infoLoc {
+  text-align: right;
+  padding-right: 62px;
+  padding-top: 5px;
+  font-size: 12px;
+  color: #525151;
+  justify-items: right;
+  z-index: 1;
+}
+
+.circle {
+  position: absolute;
+  margin: 2% 82.6%;
+  width: 39px;
+  height: 42px;
+  border: 2px solid #47A851;
+  border-radius: 50%;
+  padding: 0px;
+  border-left: none;
+}
+
+.infoLoc.photoOfLoc {
+  position: absolute;
+  margin: 3% 82.5%;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  padding: 0px;
+  cursor: pointer;
+}
+
+.infoLoc.nameOfLoc {
+  font-family: Roboto;
+  color: rgb(29, 29, 29);
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 2%;
+  cursor: pointer;
+}
+
+.infoLoc.typeOfLoc {
+  padding-top: 2px;
+}
+
+.infoLoc.placeOfLoc {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+  cursor: pointer;
+  padding-right: 77px;
+}
+
+.placeOfLocHover {
+  position: fixed;
+  background-color: #c8c8c8;
+  width: 20%;
+  white-space: pre-wrap;
+  text-align: right;
+  direction: rtl;
+  border-radius: 13px;
+  padding-right: 8px;
+  padding-bottom: 5px;
+  border-bottom-right-radius: 0px;
+  margin-left: 0px;
+  display: none;
+}
+
+.info.fa.fa-map-marker {
+  position: absolute;
+  margin-top: -20.3px;
+  margin-left: 215px;
+  color: #47A851;
+}
+
+.info.fa.fa-cutlery {
+  color: #525151;
+  padding-right: 4px;
+  padding-top: 3px;
+  width: 15px;
+  height: 15px;
+  font-size: 1px;
+  border-radius: 55px;
+  padding-left: 8px;
+}
+
+.info.fa.fa-map-marker {
+  width: 15px;
+  height: 15px;
+  font-size: 1px;
+  border-radius: 55px;
+  padding-left: 8px;
+  font-size: 15px;
+}
+
+.info.fa.fa-clock-o {
+  width: 15px;
+  height: 15px;
+  font-size: 1px;
+  border-radius: 55px;
+  padding-left: 8px;
+  font-size: 13px;
+}
+
+.Follow {
+  position: absolute;
+  margin: -29.5% 10%;
+  font-size: 9px;
+  color: #525151;
+  border: 1.5px solid #47A851;
+  width: 80px;
+  height: 16px;
+  padding-left: 25px;
+  padding-bottom: 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0px 6px 9px -5px rgba(0, 0, 0, 0.578);
+}
+
+.Follow:hover {
+  box-shadow: 0px 6px 10px -2px rgba(0, 0, 0, 0.578);
+}
+
+.goToInfo {
+  display: none;
+}
+
+.infoUser {
+  position: absolute;
+  width: 100%;
+  height: 39%;
+  background-color: #f1f0f0;
+  margin-top: 0.2%;
+}
+
+.LikeProd .btnSeeMore {
+  margin-left: 43%;
+  font-size: 1em;
+  font-weight: 600;
+  height: 35px;
+}
+
+.infoUser .photoAndNameProfile {
+  margin-left: 83%;
+  margin-top: 2.5%;
+  z-index: 0;
+}
+
+.infoUser .userPhoto {
+  width: 130px;
+  height: 130px;
+  margin-left: -1.7%;
+  margin-top: -1%;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.infoUser .green-b {
+  width: 61%;
+  height: 140px;
+  margin-left: -4px;
+  margin-top: -130px;
+}
+
+.infoUser .userName {
+  margin: 12px 5px;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: rgb(53, 53, 53);
+}
+
+.infoUser .anotherInfo {
+  position: absolute;
+  margin-left: 55%;
+  margin-top: -13%;
+  font-size: 1.1em;
+  text-align: right;
+}
+
+.infoUser .infoP {
+  margin-top: 25px;
+}
+
+.infoUser .fa.fa-map-marker {
+  color: #47A851;
+  font-size: 23px;
+}
+
+.infoUser .changeInfo {
+  color: #FFFFFF;
+  background-color: #47A851;
+  border: 1px solid #FFFFFF;
+  border-radius: 5px;
+  width: 110px;
+  margin-left: 4.8%;
+  margin-top: -3.2%;
+  font-size: 0.83em;
+  font-weight: 400;
+  padding: 11px;
+  padding-left: 15px;
+  cursor: pointer;
+}
+
+.infoUser .changeInfo:hover {
+  background-color: #FFFFFF;
+  color: #47A851;
+  border: 1px solid #47A851;
+}
+
+.infoUser .Point {
+  position: absolute;
+  color: #8cb590;
+  font-size: 22px;
+  margin-left: 5%;
+}
+
+.infoUser .likePages,
+.infoUser .likeProducts {
+  margin-left: 20px;
+  margin-top: 45px;
+  width: 92%;
+}
+
+.infoUser .likeProducts {
+  margin-left: 18px;
+  width: 99%;
+}
+
+.likePages .fa.fa-thumbs-up,
+.likePages .fas.fa-store-alt {
+  color: rgb(104, 104, 104);
+  margin-left: 5px;
+  font-size: 17px;
+}
+
+.infoUser .likeP,
+.infoUser .likePr {
+  font-size: 1.2em;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  direction: rtl;
+  margin-bottom: 50px;
+}
+
+.infoUser .likePr {
+  margin-bottom: 25px;
+}
+
+.infoUser .likeP {
+  margin-right: -30px;
+}
+
+.infoUser .likePr {
+  margin-right: 75px;
+}
+
+.infoUser .likeP .Num,
+.infoUser .likePr .Num {
+  background-color: #fff;
+  box-shadow: 2px 3px 3px rgb(167, 166, 166), -1px -1px 3px rgb(167, 166, 166);
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 5px;
+  margin-right: 2px;
+}
+
+.infoUser .ListLikeP {
+  margin-left: -860px;
+  margin-right: 85px;
+  margin-top: 18px;
+  transition: ease-out 0.6s;
+}
+
+.ListLikeProd {
+  margin-left: -860px;
+  margin-top: -1px;
+}
+
+.ListLikeProd p,
+.ScrollLikeP p {
+  margin-top: 2%;
+  font-size: 14px;
+  color: #888;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  width: 400px;
+  text-align: center;
+}
+
+.ListLikeProd p {
+  margin-right: 31.1%;
+}
+
+.ScrollLikeP p {
+  margin-left: 81.5%;
+}
+
+.sadSmail {
+  width: 6%;
+}
+
+.EditProfUser {
+  z-index: 1;
+  background-color: #fff;
+  margin-top: 3%;
+  width: 90%;
+}
+
+.EditProfUser .list-group {
+  background-color: transparent;
+}
+
+.EditProfUser .left-b {
+  margin-left: 60px;
+}
+
+.EditProfUser .rounded-circle.bu-image {
+  margin-top: 25px;
+  margin-left: 45px;
+}
+
+.EditProfUser .rounded-circle {
+  margin-left: 40px;
+  width: 126px;
+  height: 130px;
+  margin-top: -120px;
+}
+
+.EditProfUser li {
+  margin-top: 15px;
+  font-size: 1.2em;
+}
+
+.EditProfUser .btn-edit-inf {
+  margin-left: 45px;
+  width: 120px;
+}
+
+.EditProfUser .btn.btn-edit {
+  width: 110px;
+  height: 40px;
+  font-size: 0.8em;
+}
+
+.EditProfUser .bu-image {
+  width: 110px;
+  height: 110px;
+}/*# sourceMappingURL=profile.css.map */
