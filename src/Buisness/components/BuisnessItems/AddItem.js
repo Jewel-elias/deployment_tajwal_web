@@ -11,18 +11,29 @@ function AddItem() {
     const st = useSelector((state) => state.dataB);
     const dispatch = useDispatch();
 
+    // business work type
+    const { businessWorkType, setBusinessWorkType } = useBetween(st.useSharingFilters);
 
-    const types = (st.buisnessProfile.WorkType === 'مطعم') ? (st.restaurantTypes) : (st.clothesTypes);
-    const categories = (st.buisnessProfile.WorkType === 'مطعم') ? (st.filters) : (st.filtersClothes);
-    const sizes = (st.buisnessProfile.WorkType === 'مطعم') ? (0) : (st.clothesSizes);
+    const types = (businessWorkType === 'مطاعم') ? (st.restaurantTypes) : (st.clothesTypes);
+    const categories = (businessWorkType === 'مطاعم') ? (st.filters) : (st.filtersClothes);
+    const sizes = (businessWorkType === 'مطاعم') ? (0) : (st.clothesSizes);
 
-    const {itemName, setItemName} = useBetween(st.useSharingFilters);
-    const {itemPhotos, setItemPhotos} = useBetween(st.useSharingFilters);
-    const {itemCategory, setItemCategory} = useBetween(st.useSharingFilters);
-    const {itemType, setItemType} = useBetween(st.useSharingFilters);
-    const {itemSizes, setItemSizes} = useBetween(st.useSharingFilters);
-    const {itemText, setItemText} = useBetween(st.useSharingFilters);
-    const {itemPrice, setItemPrice} = useBetween(st.useSharingFilters);
+    const { TypesUp, setTypesUp } = useBetween(st.useSharingFilters);
+    var tempTypesUp = TypesUp;
+
+    const { categoriesDropdown, setCategoriesDropdown } = useBetween(st.useSharingFilters);
+
+    const { itemName, setItemName } = useBetween(st.useSharingFilters);
+    const { itemPhotos, setItemPhotos } = useBetween(st.useSharingFilters);
+    const { imagesFormData, setImagesFormData } = useBetween(st.useSharingFilters);
+    const { itemCategory, setItemCategory } = useBetween(st.useSharingFilters);
+    const { itemType, setItemType } = useBetween(st.useSharingFilters);
+    const { itemCategoryId, setItemCategoryId } = useBetween(st.useSharingFilters);
+    const { itemTypeId, setItemTypeId } = useBetween(st.useSharingFilters);
+    const { itemSizes, setItemSizes } = useBetween(st.useSharingFilters);
+    const { itemText, setItemText } = useBetween(st.useSharingFilters);
+    const { itemPrice, setItemPrice } = useBetween(st.useSharingFilters);
+
 
 
     useEffect(() => {
@@ -33,7 +44,7 @@ function AddItem() {
     }
 
     const changeField = (event, id) => {
-        
+
         if (id === 'name-add-item') {
             // dispatch({
             //     type: 'add-new-item-name',
@@ -60,14 +71,25 @@ function AddItem() {
             //     type: 'add-new-item-category',
             //     state: event.target.value
             // })
-            setItemCategory(event.target.value);
+            setItemCategoryId(event.target.value);
+            for (let i = 0; i < categoriesDropdown.length; i++) {
+                if (event.target.value === categoriesDropdown[i].busTypeId) {
+                    setItemCategory(categoriesDropdown[i].name)
+                }
+            }
         }
         else if (id === "veg-or-not") {
             // dispatch({
             //     type: 'add-new-item-type',
             //     state: event.target.value
             // })
-            setItemType(event.target.value);
+            
+            for (let i = 0; i < TypesUp.length; i++) {
+                if (event.target.value === TypesUp[i].busTypeId) {
+                    setItemTypeId(event.target.value);
+                    setItemType(TypesUp[i].name)
+                }
+            }
         }
         else if (id === "size") {
             if (itemSizes.includes(event.target.value)) {
@@ -101,6 +123,18 @@ function AddItem() {
             };
 
             reader.readAsDataURL(e.target.files[0]);
+            // console.log(e.target.files[0])
+            // const formData = new FormData();
+            // formData.append("image", e.target.files[0]);
+            // setImagesFormData(formData);
+            setImagesFormData([...imagesFormData, e.target.files[0]]);
+            console.log(imagesFormData);
+
+            // imagesFormData.append("fileName", e.target.files[0].name);
+            // imagesFormData.push(formData);//Array of form data
+            // setImagesFormData(imagesFormData.push(e.target.files[0]));
+            // setImagesFormData([...imagesFormData, ...e.target.files[0]])
+
         }
         document.getElementById("upload-input").value = '';
     }
@@ -185,13 +219,13 @@ function AddItem() {
                     <li className="input-field-add-item form-control" id="type-li-validation">
                         <label htmlFor="type" className='radio-add-item'>النوع:</label>
                         {
-                            types.length ? (types.map(type => {
+                            TypesUp.length ? (TypesUp.map(type => {
                                 return (
-                                    <div key={type.typeId} className="form-check form-check-inline">
-                                        <input className="form-check-input" type="radio" name="radio-veg-or-not" id={"inlineRadio" + type.typeId}
-                                            value={type.typeName} onChange={(event) => changeField(event, "veg-or-not")}
+                                    <div key={type.id} className="form-check form-check-inline">
+                                        <input className="form-check-input" type="radio" name="radio-veg-or-not" id={"inlineRadio" + type.id}
+                                            value={type.busTypeId} onChange={(event) => changeField(event, "veg-or-not")}
                                             onClick={(event) => clickField(event, 'type-li-validation')} />
-                                        <label className="form-check-label" htmlFor={"inlineRadio" + type.typeId}>{type.typeName}</label>
+                                        <label className="form-check-label" htmlFor={"inlineRadio" + type.id}>{type.name}</label>
                                     </div>
                                 );
                             })
@@ -209,9 +243,9 @@ function AddItem() {
                             onChange={(event) => changeField(event, "select-category-add-item")}
                             onClick={(event) => clickField(event, 'select-category-add-item')} required>
                             {
-                                categories.length ? categories.map(filter => {
+                                categoriesDropdown.length ? categoriesDropdown.map(categ => {
                                     return (
-                                        <option key={filter.filterType} value={filter.filterType}>{filter.filterType}</option>
+                                        <option key={categ.id} value={categ.busTypeId}>{categ.name}</option>
                                     )
                                 }
                                 )
@@ -224,7 +258,7 @@ function AddItem() {
                         <div className="invalid-feedback">يرجى تحديد تصنيف المنتج</div>
                     </li>
                     {
-                        (st.buisnessProfile.WorkType === 'ملابس') ? (
+                        (businessWorkType === 'ألبسة') ? (
                             sizes.length ? (
                                 <li className="input-field-add-item form-control" id="type-li-validation">
                                     <label htmlFor="type" className='radio-add-item'>المقاسات المتوفّرة:</label>
@@ -300,7 +334,8 @@ function AddItem() {
                                         <input
                                             id="upload-input"
                                             type="file"
-                                            accept=".jpg,.jpeg,.png"
+
+                                            // accept=".jpg,.jpeg,.png"
                                             onChange={handleImageChange}
                                             style={{ display: 'none' }}
                                         />
@@ -362,7 +397,7 @@ function AddItem() {
                     </li>
 
                     {
-                        (st.buisnessProfile.WorkType === 'ملابس') ? (
+                        (businessWorkType === 'ألبسة') ? (
                             <li className="input-field-add-item">
                                 <label htmlFor="type" className='radio-add-item'>المقاسات المتوفّرة:</label>
                                 {

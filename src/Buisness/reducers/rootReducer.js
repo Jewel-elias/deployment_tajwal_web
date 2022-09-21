@@ -1,13 +1,24 @@
 import { useState } from 'react';
 
-
+// shop photos
 import BuisnessPicture from '../images/NewMoon.jpg';
+import NewMoon from '../images/NewMoon.jpg';
+import Cranshy from '../../components/photo/cranshe.jpg';
+import Gusto from '../../components/photo/Gosto.jpg';
+import She from '../../components/photo/she.jpg';
+import Bordo from '../../components/photo/bordo.jpg';
+
 
 // profile photos :
 import Jewel from '../images/Jewel.jpg';
 import Meery from '../images/Meery.jpg';
 import Mary from '../images/Jewel.jpg';
 import Laith from '../images/Meery.jpg';
+
+// Clothes photo
+import Dr1 from '../../components/photo/dr1.jpg';
+import Dr2 from '../../components/photo/dr2.jpg';
+import Dr3 from '../../components/photo/dr3.jpg';
 
 // item photos :
 
@@ -54,20 +65,25 @@ const initState = {
 
     // Buisness Profile Data
     buisnessProfile: {
-        WorkName: 'New Moon',
-        WorkType: 'مطعم', // ملابس مطعم
+        WorkId: 1,
+        WorkName: '...',
+        WorkType: 'جاري التحميل..', // ألبسة مطاعم
         openOrclose: 'مفتوح الآن',
-        workTime: '09:00 AM - 10:00 PM',
-        workLocation: 'الحضارة - زاوية شارع العشاق',
-        workNumber: '0968820968',
-        workMail: 'newmoon@hotmail.com',
-        workPassword: 'jewelPass',
-        workConPassword: 'jewelPass',
-        workDescription: 'وجبات شرقي غربي - توصيل لأي مكان',
-        workPicture: BuisnessPicture,
-        nFollowers: '123K',
-        nProducts: '233M',
-        nRaters: '110K',
+        workTime: [{}],
+        workLocation: '...',
+        long: 0,
+        lati: 0,
+        workNumber: '...',
+        WorkTypeId: 1,
+        workMail: '...',
+        workPassword: '........',
+        workConPassword: '........',
+        workDescription: '',
+        workPicture: 'http://tajwal2.herokuapp.com/image_0ljq1zms6j.png',
+        showComment: true,
+        nFollowers: '...',
+        nProducts: '...',
+        nRaters: '...',
     },
     // online user
     // onlineUser: initState.buisnessProfile,
@@ -80,13 +96,14 @@ const initState = {
             itemId: 1,
             itemStoreName: 'Zara',
             itemStorePicture: BuisnessPicture,
-            itemName: 'جاكيت شتوي',
-            itemPhotos: [Hamburger1, Hamburger2, Hamburger3],
-            itemCategory: 'جواكيت',
-            itemType: 'رجالي',
+            itemName: 'بيجاما',
+            itemPhotos: [Dr3, Dr3, Dr3],
+            itemCategory: 'بجامات',
+            itemType: 'نسواني',
             itemSizes: ['S', 'XS', 'M'],
-            itemText: 'جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة',
+            itemText: 'بيجاما صيفية مميزة .. وموجود ألوان مختلفة و بسعر مناسب و قماشة رائعة ومريحة',
             itemPrice: '55500',
+            itemRate: 4.5,
             itemLikes: 50,
             itemDislikes: 20,
             itemComments: 10,
@@ -131,13 +148,14 @@ const initState = {
             itemId: 2,
             itemStoreName: 'Zara',
             itemStorePicture: BuisnessPicture,
-            itemName: 'بنطلون جينز بوي فريند',
-            itemPhotos: [Hamburger1, Hamburger2, Hamburger3],
-            itemCategory: 'بناطلين',
+            itemName: 'كنزة',
+            itemPhotos: [Dr2, Dr2, Dr2],
+            itemCategory: 'كنزات',
             itemType: 'نسواني',
             itemSizes: ['S', 'XS', 'M', 'XL'],
-            itemText: 'جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة جاكيت سميك و قماشة رائعة',
+            itemText: 'كنزة شتوية نسوانية مريحة ويوجد منها ألوان متعددة بأقمشة مميزة لا تجدونها إلا لدينا',
             itemPrice: '25500',
+            itemRate: 3.5,
             itemLikes: 50,
             itemDislikes: 20,
             itemComments: 10,
@@ -234,372 +252,7 @@ const initState = {
     ],
 
     // Buisness Products
-    items: [
-        {
-            itemId: 1,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'هامبرغر',
-            itemPhotos: [Hamburger1, Hamburger2, Hamburger3],
-            itemCategory: 'وجبات',
-            itemType: 'حيواني',
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '25500',
-            itemLikes: 83,
-            likeInt:true,
-            dislikeInt:false,
-            itemDislikes: 10,
-            itemComments: 56,
-            itemDate: 'Mar 10 2022 10:00:00 AM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 2,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'شاورما عربي',
-            itemPhotos: [Shawarma1, Shawarma2, Shawarma3, Shawarma4],
-            itemCategory: 'سندويش',
-            likeInt:true,
-             dislikeInt:false,
-            itemType: 'حيواني',
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '20000',
-            itemLikes: 95,
-            itemDislikes: 18,
-            itemComments: 38,
-            itemDate: 'Mar 01 2022 10:00:00 AM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 3,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'كريسبي',
-            itemPhotos: [Crispy1, Crispy2, Crispy3],
-            itemCategory: 'وجبات',
-            itemType: 'حيواني',
-            likeInt:false,
-            dislikeInt:false,
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '15600',
-            itemLikes: 95,
-            itemDislikes: 18,
-            itemComments: 38,
-            itemDate: 'Feb 10 2022 11:00:00 AM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 4,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'كباب لحمة',
-            itemPhotos: [Kabab1, Kabab2, Kabab3],
-            itemCategory: 'وجبات',
-            itemType: 'حيواني',
-            likeInt:false,
-             dislikeInt:false,
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '30000',
-            itemLikes: 95,
-            itemDislikes: 18,
-            itemComments: 38,
-            itemDate: 'Feb 15 2022 11:00:00 AM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 5,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'سلطة',
-            itemPhotos: [Salad1, Salad2, Salad3],
-            itemCategory: 'وجبات',
-            itemType: 'نباتي',
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '11200',
-            likeInt:true,
-            dislikeInt:false,
-            itemLikes: 95,
-            itemDislikes: 18,
-            itemComments: 38,
-            itemDate: 'Mar 10 2022 10:00:00 PM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 6,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'بيتزا مارغريتا',
-            itemPhotos: [Pizza1, Pizza2, Pizza3, Pizza4, Pizza5, Pizza6],
-            itemCategory: 'وجبات',
-            itemType: 'حيواني',
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '18700',
-            likeInt:false,
-            dislikeInt:true,
-            itemLikes: 120,
-            itemDislikes: 11,
-            itemComments: 56,
-            itemDate: 'Mar 10 2022 10:00:00 AM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        },
-        {
-            itemId: 7,
-            itemStoreName: 'New Moon',
-            itemStorePicture: BuisnessPicture,
-            itemName: 'فلافل سورية',
-            itemPhotos: [Falafel1, Falafel2, Falafel3, Falafel4],
-            itemCategory: 'سندويش',
-            itemType: 'نباتي',
-            itemText: 'سندويشة محشية باللحم المتبّل بأطيب أنواع البهارات .. بالإضافة الى الصوص الشهي.. جرّبها مابتندم',
-            itemPrice: '11200',
-            itemLikes: 95,
-            likeInt:true,
-            dislikeInt:false,
-            itemDislikes: 18,
-            itemComments: 38,
-            itemDate: 'Mar 10 2022 10:00:00 PM',
-            itemCommentsDetails: [
-                {
-                    id: 1,
-                    clientName: 'جويل الياس',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: [
-                        {
-                            id: 1,
-                            name: 'New Moon',
-                            photo: BuisnessPicture,
-                            date: '28/11/2021',
-                            text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك'
-                        },
-                        {
-                            id: 2,
-                            name: 'جويل الياس',
-                            photo: Jewel,
-                            date: '28/11/2021',
-                            text: 'الله يعطيكن العافية'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    clientName: 'ميري عوض',
-                    clientPhoto: Jewel,
-                    date: '27/11/2021',
-                    text: 'أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,أكل جدا طيب و مكونات رائعة و خدمة ممتازة,',
-                    repliesVisibility: false,
-                    replies: []
-                },
-            ]
-        }
-    ],
+    items: [{}],
 
 
     // Filter By
@@ -632,102 +285,104 @@ const initState = {
     notifications: [
         {
             notificationId: 1,
-            notificationType: 'like',
+            notificationType: 'rate',
             notificationDate: 'just now',
             notificationProduct: 'هامبرغر',
-            notificationClients: [{
-                name: 'ماري الريس',
-                photo: Mary
-            }, {
-                name: 'جويل الياس',
-                photo: Jewel
-            }, {
-                name: 'ميري عوض',
-                photo: Meery
-            }, {
-                name: 'ليث الحلواني',
-                photo: Laith
-            }],
-            notificationPhoto: Hamburger1
-        },
-        {
-            notificationId: 2,
-            notificationType: 'like',
-            notificationDate: '2h 14m',
-            notificationProduct: 'كريسبي',
-            notificationClients: [{
-                name: 'ماري الريس',
-                photo: Mary
-            }, {
-                name: 'جويل الياس',
-                photo: Jewel
-            }, {
-                name: 'ميري عوض',
-                photo: Meery
-            }, {
-                name: 'ليث الحلواني',
-                photo: Laith
-            }],
-            notificationPhoto: Crispy1
-        },
-        {
-            notificationId: 3,
-            notificationType: 'dislike',
-            notificationDate: '4h 36m',
-            notificationProduct: 'شاورما',
-            notificationClients: [{
-                name: 'ميري عوض',
-                photo: Meery
-            }, {
-                name: 'جويل الياس',
-                photo: Jewel
-            }, {
-                name: 'ماري الريس',
-                photo: Mary
-            }, {
-                name: 'ليث الحلواني',
-                photo: Laith
-            }],
-            notificationPhoto: Shawarma1
-        },
-        {
-            notificationId: 4,
-            notificationType: 'dislike',
-            notificationDate: '4h 36m',
-            notificationProduct: 'هامبرغر',
-            notificationClients: [{
-                name: 'جويل الياس',
-                photo: Jewel
-            }, {
-                name: 'ماري الريس',
-                photo: Mary
-            }, {
-                name: 'ميري عوض',
-                photo: Meery
-            }, {
-                name: 'ليث الحلواني',
-                photo: Laith
-            }],
-            notificationPhoto: Hamburger1
-        },
-        {
-            notificationId: 5,
-            notificationType: 'comment',
-            notificationDate: '4h 36m',
-            notificationProduct: 'سلطة',
             notificationClients: [
                 {
-                    name: 'ليث الحلواني',
-                    photo: Laith
-                }, {
                     name: 'جويل الياس',
                     photo: Jewel
                 }, {
                     name: 'ميري عوض',
                     photo: Meery
                 }, {
-                    name: 'ماري الريس',
-                    photo: Mary
+                    name: 'جويل الياس',
+                    photo: Jewel
+                }, {
+                    name: 'ميري عوض',
+                    photo: Meery
+                }],
+            notificationPhoto: Hamburger1
+        },
+        {
+            notificationId: 2,
+            notificationType: 'comment',
+            notificationDate: '2h 14m',
+            notificationProduct: 'كريسبي',
+            notificationClients: [{
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }, {
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }],
+            notificationPhoto: Crispy1
+        },
+        {
+            notificationId: 3,
+            notificationType: 'rate',
+            notificationDate: '4h 36m',
+            notificationProduct: 'شاورما',
+            notificationClients: [
+                {
+                    name: 'جويل الياس',
+                    photo: Jewel
+                }, {
+                    name: 'ميري عوض',
+                    photo: Meery
+                }, {
+                    name: 'جويل الياس',
+                    photo: Jewel
+                }, {
+                    name: 'ميري عوض',
+                    photo: Meery
+                }],
+            notificationPhoto: Shawarma1
+        },
+        {
+            notificationId: 4,
+            notificationType: 'comment',
+            notificationDate: '4h 36m',
+            notificationProduct: 'هامبرغر',
+            notificationClients: [{
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }, {
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }],
+            notificationPhoto: Hamburger1
+        },
+        {
+            notificationId: 5,
+            notificationType: 'rate',
+            notificationDate: '4h 36m',
+            notificationProduct: 'سلطة',
+            notificationClients: [
+                {
+                    name: 'جويل الياس',
+                    photo: Jewel
+                }, {
+                    name: 'ميري عوض',
+                    photo: Meery
+                }, {
+                    name: 'جويل الياس',
+                    photo: Jewel
+                }, {
+                    name: 'ميري عوض',
+                    photo: Meery
                 }],
             notificationPhoto: Salad1
         },
@@ -736,20 +391,88 @@ const initState = {
             notificationType: 'comment',
             notificationDate: '4h 36m',
             notificationProduct: 'كريسبي',
-            notificationClients: [
-                {
-                    name: 'ليث الحلواني',
-                    photo: Laith
-                }, {
-                    name: 'جويل الياس',
-                    photo: Jewel
-                }, {
-                    name: 'ميري عوض',
-                    photo: Meery
-                }, {
-                    name: 'ماري الريس',
-                    photo: Mary
-                }],
+            notificationClients: [{
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }, {
+                name: 'ميري عوض',
+                photo: Meery
+            }, {
+                name: 'جويل الياس',
+                photo: Jewel
+            }],
+            notificationPhoto: Crispy1
+        },
+    ],
+
+    notificationsForClient: [
+        {
+            notificationId: 1,
+            notificationType: 'post',
+            notificationDate: 'just now',
+            notificationProduct: 'هامبرغر',
+            notificationShop: {
+                name: 'New Moon',
+                photo: NewMoon
+            },
+            notificationPhoto: Hamburger1
+        },
+        {
+            notificationId: 2,
+            notificationType: 'reply',
+            notificationDate: '2h 14m',
+            notificationProduct: 'كريسبي',
+            notificationShop: {
+                name: 'Gusto',
+                photo: Gusto
+            },
+            notificationPhoto: Crispy1
+        },
+        {
+            notificationId: 3,
+            notificationType: 'post',
+            notificationDate: '4h 36m',
+            notificationProduct: 'فستان',
+            notificationShop: {
+                name: 'She',
+                photo: She
+            },
+            notificationPhoto: Dr1
+        },
+        {
+            notificationId: 4,
+            notificationType: 'reply',
+            notificationDate: '4h 36m',
+            notificationProduct: 'هامبرغر',
+            notificationShop: {
+                name: 'Cranshy',
+                photo: Cranshy
+            },
+            notificationPhoto: Hamburger1
+        },
+        {
+            notificationId: 5,
+            notificationType: 'post',
+            notificationDate: '4h 36m',
+            notificationProduct: 'سلطة',
+            notificationShop: {
+                name: 'Bordo',
+                photo: Bordo
+            },
+            notificationPhoto: Salad1
+        },
+        {
+            notificationId: 6,
+            notificationType: 'reply',
+            notificationDate: '4h 36m',
+            notificationProduct: 'كريسبي',
+            notificationShop: {
+                name: 'Bordo',
+                photo: Bordo
+            },
             notificationPhoto: Crispy1
         },
     ],
@@ -758,37 +481,37 @@ const initState = {
     feedbacks: [
         {
             id: 1,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة تجربة تجربة تجربة تجربة تجربة ',
+            text: 'الأكل جدا سيء والخدمة مو منيحة',
             date: '28/11/2021'
         },
         {
             id: 2,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'الوجبات باردة و التوابل قليلة',
             date: '10/11/2021'
         },
         {
             id: 3,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'بطيئييين كتير بتحضير الاكل',
             date: '18/10/2021'
         },
         {
             id: 4,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'خففو حر بالشاورما بتحرق',
             date: '28/09/2021'
         },
         {
             id: 5,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'الوجبات باردة و التوابل قليلة',
             date: '10/08/2021'
         },
         {
             id: 6,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'الوجبات باردة و التوابل قليلة',
             date: '24/07/2021'
         },
         {
             id: 7,
-            text: 'تجربة تجربة تجربة تجربة تجربة تجربة',
+            text: 'الوجبات باردة و التوابل قليلة',
             date: '28/11/2020'
         },
     ],
@@ -800,77 +523,98 @@ const initState = {
             opened: 'مغلق',
             timeFrom: 'undefined',
             timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day1',
             timePickerFromId: 'from1',
             timePickerToId: 'to1',
             toggleId: 'toggle1',
-            timePickerId: 'time1'
+            timePickerId: 'time1',
+            openOrclose: 'close'
         },
         {
             day: 'الأحد',
-            opened: 'مفتوح',
-            timeFrom: '09:00',
-            timeTo: '22:00',
+            opened: 'مغلق',
+            timeFrom: 'undefined',
+            timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day2',
             timePickerFromId: 'from2',
             timePickerToId: 'to2',
             toggleId: 'toggle2',
-            timePickerId: 'time2'
+            timePickerId: 'time2',
+            openOrclose: 'close'
         },
         {
             day: 'الاثنين',
-            opened: 'مفتوح',
-            timeFrom: '09:00',
-            timeTo: '22:00',
+            opened: 'مغلق',
+            timeFrom: 'undefined',
+            timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day3',
             timePickerFromId: 'from3',
             timePickerToId: 'to3',
             toggleId: 'toggle3',
-            timePickerId: 'time3'
+            timePickerId: 'time3',
+            openOrclose: 'close'
         },
         {
             day: 'الثّلاثاء',
             opened: 'مغلق',
             timeFrom: 'undefined',
             timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day4',
             timePickerFromId: 'from4',
             timePickerToId: 'to4',
             toggleId: 'toggle4',
-            timePickerId: 'time4'
+            timePickerId: 'time4',
+            openOrclose: 'close'
         },
         {
             day: 'الأربعاء',
-            opened: 'مفتوح',
-            timeFrom: '09:00',
-            timeTo: '22:00',
+            opened: 'مغلق',
+            timeFrom: 'undefined',
+            timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day5',
             timePickerFromId: 'from5',
             timePickerToId: 'to5',
             toggleId: 'toggle5',
-            timePickerId: 'time5'
+            timePickerId: 'time5',
+            openOrclose: 'close'
         },
         {
             day: 'الخميس',
-            opened: 'مفتوح',
-            timeFrom: '09:00',
-            timeTo: '22:00',
+            opened: 'مغلق',
+            timeFrom: 'undefined',
+            timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day6',
             timePickerFromId: 'from6',
             timePickerToId: 'to6',
             toggleId: 'toggle6',
-            timePickerId: 'time6'
+            timePickerId: 'time6',
+            openOrclose: 'close'
         },
         {
             day: 'الجمعة',
             opened: 'مغلق',
             timeFrom: 'undefined',
             timeTo: 'undefined',
+            timeMsFrom: 0,
+            timeMsTo: 0,
             dayId: 'day7',
             timePickerFromId: 'from7',
             timePickerToId: 'to7',
             toggleId: 'toggle7',
-            timePickerId: 'time7'
+            timePickerId: 'time7',
+            openOrclose: 'close'
         }
     ],
 
@@ -891,6 +635,7 @@ const initState = {
         itemDate: 'Mar 10 2022 10:00:00 AM',
         itemCommentsDetails: [
             {
+                commentNumber: 0,
                 id: 1,
                 clientName: 'جويل الياس',
                 clientPhoto: Jewel,
@@ -925,6 +670,7 @@ const initState = {
         itemDate: 'Mar 10 2022 10:00:00 AM',
         itemCommentsDetails: [
             {
+                commentNumber: 0,
                 id: 1,
                 clientName: 'جويل الياس',
                 clientPhoto: Jewel,
@@ -942,24 +688,114 @@ const initState = {
             },
         ]
     },
+    similarFood: [
+        {
+            id: 1,
+            name: 'بيتزا مارغريتا',
+            photo: Pizza1
+        },
+        {
+            id: 2,
+            name: 'بيتزا مارينا',
+            photo: Pizza2
+        },
+        {
+            id: 3,
+            name: 'بيتزا عائلية',
+            photo: Pizza3
+        },
+        {
+            id: 4,
+            name: 'بيتزا طوشكا',
+            photo: Pizza4
+        },
+        {
+            id: 5,
+            name: 'بيتزا قشقوان',
+            photo: Pizza5
+        },
+        {
+            id: 6,
+            name: 'بيتزا سجق',
+            photo: Pizza6
+        }
+    ],
+
+    // use Between
 
     useSharingFilters: () => {
         // current selected category (single selected)
         const [selectedCategory, setSelectedCategory] = useState('الكل');
         // current selected filter 
-        const [selectedFilterDropdown1, setSelectedFilterDropdown1] = useState({ type: [], minPrice: '5000', maxPrice: '35000' });
+        const [selectedFilterDropdown1, setSelectedFilterDropdown1] = useState({ type: [], minPrice: '0', maxPrice: '35000' });
         const [selectedFilterDropdown2, setSelectedFilterDropdown2] = useState('most-likes');
+        const [selectedSizes, setSelectedSizes] = useState([]);
+
+        // Access Token
+        const [accessToken, setAccessToken] = useState('');
+
+        // User Type
+        const [userType, setUserType] = useState('business');
+
+        // Business Profile
+        const [buisnessProfile, setBuisnessProfile] = useState(initState.buisnessProfile);
+
+        // Products or Items
+        const [items, setItems] = useState(initState.items);
+
+        // Work Schedule
+        const [workSchedule, setWorkSchedule] = useState(initState.workSchedule);
+
+        // Buisness work type
+        const [businessWorkType, setBusinessWorkType] = useState('جاري التحميل...');
+
+        // Business Me (current business)
+        const [businessMe, setBusinessMe] = useState({});
+
+        // Buisness Types
+        const [buisnessTypes, setBuisnessTypes] = useState([{ _id: 'tmpIdBusinessType', name: 'جاري التحميل..' }]);
+
+
+        const [oldfeedbackslength, setOldfeedbackslength] = useState(0);
+        const [sizes, setSizes] = useState([
+            { id: 1, name: 'XS' }, { id: 2, name: 'S' }, { id: 3, name: 'M' }, { id: 4, name: 'L' }, { id: 5, name: 'XL' },
+            { id: 6, name: 'XXL' }, { id: 7, name: 'XXXL' },
+        ])
+
+        // Types up in filter
+        // **ATTENTION::::REVERSED with categoriesDropdown**
+        const [TypesUp, setTypesUp] = useState([]);
+
+        // Categories in dropdown filter
+        // **ATTENTION::::REVERSED with TypesUp**
+        const [categoriesDropdown, setCategoriesDropdown] = useState([{ id: 'filter-by-id1', name: 'الكل', busTypeId: '1' }]);
+
+        // Today Buisness work time
+        const [todayWork, setTodayWork] = useState('مغلق اليوم');
+
+        const [feedbacks, setFeedbacks] = useState([]);
+        const [newFeedNumber, setNewFeedNumber] = useState(0);
+        const [oldFeed, setOldFeed] = useState(0);
+
+        const [flagDeleteItem, setFlagDeleteItem] = useState(false);
+
+        const [workTypeId, setWorkTypeId] = useState('');
+        const [deletedItem, setDeletedItem] = useState(false);
+        const [flagEditProfileBusi, setFlagEditProfileBusi] = useState(false);
+        const [addedPhotos, setAddedPhotos] = useState(false);
 
         // Add Item
         const [itemName, setItemName] = useState('');
         const [itemPhotos, setItemPhotos] = useState([]);
+        const [imagesFormData, setImagesFormData] = useState([]);
         const [itemCategory, setItemCategory] = useState('');
         const [itemType, setItemType] = useState('');
+        const [itemCategoryId, setItemCategoryId] = useState('');
+        const [itemTypeId, setItemTypeId] = useState('');
         const [itemSizes, setItemSizes] = useState([]);
         const [itemText, setItemText] = useState('');
         const [itemPrice, setItemPrice] = useState('');
-        const [buisnessProfile,setBuisnessProfile] = useState(initState.buisnessProfile);
-        const [item, setItem] = useState(initState.items[0]);
+        const [item, setItem] = useState({});
         const [signUpWelcome, setSignUpWelcome] = useState('اكتشف الأماكن و قُم بالتسوّق و التجوّل من المنزل بكلّ بساطة.');
 
         return {
@@ -970,13 +806,36 @@ const initState = {
             itemPhotos, setItemPhotos,
             itemCategory, setItemCategory,
             itemType, setItemType,
+            itemCategoryId, setItemCategoryId,
+            itemTypeId, setItemTypeId,
             itemSizes, setItemSizes,
             itemText, setItemText,
             itemPrice, setItemPrice,
-            buisnessProfile,setBuisnessProfile,
+            buisnessProfile, setBuisnessProfile,
             item, setItem,
-            signUpWelcome, setSignUpWelcome
-
+            signUpWelcome, setSignUpWelcome,
+            buisnessTypes, setBuisnessTypes,
+            accessToken, setAccessToken,
+            userType, setUserType,
+            businessMe, setBusinessMe,
+            todayWork, setTodayWork,
+            items, setItems,
+            workSchedule, setWorkSchedule,
+            businessWorkType, setBusinessWorkType,
+            TypesUp, setTypesUp,
+            categoriesDropdown, setCategoriesDropdown,
+            feedbacks, setFeedbacks,
+            flagDeleteItem, setFlagDeleteItem,
+            oldfeedbackslength, setOldfeedbackslength,
+            workTypeId, setWorkTypeId,
+            deletedItem, setDeletedItem,
+            flagEditProfileBusi, setFlagEditProfileBusi,
+            imagesFormData, setImagesFormData,
+            newFeedNumber, setNewFeedNumber,
+            oldFeed, setOldFeed,
+            addedPhotos, setAddedPhotos,
+            sizes, setSizes,
+            selectedSizes, setSelectedSizes
         };
     },
 

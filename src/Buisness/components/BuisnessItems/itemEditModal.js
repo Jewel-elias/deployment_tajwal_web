@@ -5,19 +5,29 @@ import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useBetween } from 'use-between';
+import Axios from 'axios'
 
 function ItemEditModal(props) {
 
     // HOOKS
     const st = useSelector((state) => state.dataB);
     const dispatch = useDispatch();
-    // const [item, setItem] = useState((st.buisnessProfile.WorkType === 'مطعم') ? (st.items[props.itemId - 1]) : (st.clothesItems[props.itemId - 1]));
+    // const [item, setItem] = useState((businessWorkType === 'مطاعم') ? (st.items[props.itemId - 1]) : (st.clothesItems[props.itemId - 1]));
 
     const { item, setItem } = useBetween(st.useSharingFilters);
 
-    const types = (st.buisnessProfile.WorkType === 'مطعم') ? (st.restaurantTypes) : (st.clothesTypes);
-    const categories = (st.buisnessProfile.WorkType === 'مطعم') ? (st.filters) : (st.filtersClothes);
-    const sizes = (st.buisnessProfile.WorkType === 'مطعم') ? (0) : (st.clothesSizes);
+    // business work type
+    const { businessWorkType, setBusinessWorkType } = useBetween(st.useSharingFilters);
+
+    // Access Token
+    const { accessToken, setAccessToken } = useBetween(st.useSharingFilters);
+
+    const types = (businessWorkType === 'مطاعم') ? (st.restaurantTypes) : (st.clothesTypes);
+    const categories = (businessWorkType === 'مطاعم') ? (st.filters) : (st.filtersClothes);
+    const sizes = (businessWorkType === 'مطاعم') ? (0) : (st.clothesSizes);
+
+    const { TypesUp, setTypesUp } = useBetween(st.useSharingFilters);
+    const { categoriesDropdown, setCategoriesDropdown } = useBetween(st.useSharingFilters);
 
     // Constants And Variables
     // state for editing product (item)
@@ -40,6 +50,25 @@ function ItemEditModal(props) {
         //         value: editedItem
         //     }
         // });
+
+        const data = {
+            "name": editedItem.itemName,
+            "price": Number(editedItem.itemPrice),
+            "description": editedItem.itemText,
+            "categoriesId": editedItem.itemCategoryId,
+            "typesId": editedItem.itemTypeId
+        };
+        Axios.patch(`https://tajwal2.herokuapp.com/api/products/${item.itemId}`, data, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                "Content-Type": "application/json;charset=UTF-8"
+            }
+        }
+        )
+            .then(res => {
+                console.log("Edit Product :::: ", res.data);
+            })
+            .catch((err) => { console.log(err) });
         setItem(editedItem);
         setRefImg(!refImg);
         handleClose();
@@ -59,10 +88,20 @@ function ItemEditModal(props) {
             editedItem.itemText = event.target.value;
         }
         else if (id === 'select-category-edit-item') {
-            editedItem.itemCategory = event.target.value;
+            editedItem.itemCategoryId = event.target.value;
+            for (let i = 0; i < categoriesDropdown.length; i++) {
+                if (event.target.value === categoriesDropdown[i].busTypeId) {
+                    editedItem.itemCategory = categoriesDropdown[i].name
+                }
+            }
         }
         else if (id === "veg-or-not") {
-            editedItem.itemType = event.target.value;
+            editedItem.itemTypeId = event.target.value;
+            for (let i = 0; i < TypesUp.length; i++) {
+                if (event.target.value === TypesUp[i].busTypeId) {
+                    editedItem.itemType = TypesUp[i].name
+                }
+            }
         }
         else if (id === "size") {
             if (editedItem.itemSizes.includes(event.target.value)) {
@@ -143,9 +182,6 @@ function ItemEditModal(props) {
                                             defaultValue={editedItem.itemText} onChange={(event) => changeField(event, 'desc-edit-item')} required />
                                         <div className="invalid-feedback">يرجى إدخال وصف للمنتج</div>
                                     </li>
-
-
-
                                 </ul>
                             </div>
 
@@ -163,13 +199,13 @@ function ItemEditModal(props) {
                                     <li className="input-field-add-item form-control input-field-edit-item input-field-edit-item-radio" id="type-li-validation">
                                         <label htmlFor="type" className='radio-add-item'>النوع:</label>
                                         {
-                                            types.length ? (types.map(type => {
+                                            TypesUp.length ? (TypesUp.map(type => {
                                                 return (
-                                                    <div key={type.typeId} className="form-check form-check-inline form-radio-edit-item">
-                                                        <input className="form-check-input font-input-edit" type="radio" name="radio-veg-or-not" id={"inlineRadio" + type.typeId}
-                                                            value={type.typeName} defaultChecked={editedItem.itemType === type.typeName ? true : false}
+                                                    <div key={type.id} className="form-check form-check-inline form-radio-edit-item">
+                                                        <input className="form-check-input font-input-edit" type="radio" name="radio-veg-or-not" id={"inlineRadio" + type.id}
+                                                            value={type.busTypeId} defaultChecked={editedItem.itemType === type.name ? true : false}
                                                             onChange={(event) => changeField(event, "veg-or-not")} />
-                                                        <label className="form-check-label" htmlFor={"inlineRadio" + type.typeId}>{type.typeName}</label>
+                                                        <label className="form-check-label" htmlFor={"inlineRadio" + type.id}>{type.name}</label>
                                                     </div>
                                                 );
                                             })
@@ -187,10 +223,10 @@ function ItemEditModal(props) {
                                             id="select-category-edit-item" onChange={(event) => changeField(event, "select-category-edit-item")}
                                             required>
                                             {
-                                                categories.length ? categories.map(filter => {
+                                                categoriesDropdown.length ? categoriesDropdown.map(categ => {
                                                     return (
-                                                        <option key={filter.filterType} value={filter.filterType}
-                                                        >{filter.filterType}</option>
+                                                        <option key={categ.id} value={categ.busTypeId}
+                                                        >{categ.name}</option>
                                                     )
                                                 }
                                                 )
@@ -204,7 +240,7 @@ function ItemEditModal(props) {
                                     </li>
 
                                     {
-                                        (st.buisnessProfile.WorkType === 'ملابس') ? (
+                                        (businessWorkType === 'ألبسة') ? (
                                             sizes.length ? (
                                                 <li className="input-field-add-item form-control" id="type-li-validation">
                                                     <label htmlFor="type" className='radio-add-item'>المقاسات المتوفّرة:</label>
@@ -213,7 +249,7 @@ function ItemEditModal(props) {
                                                             return (
                                                                 <div key={size.sizeId} className="form-check form-check-inline">
                                                                     <input className="form-check-input font-input-edit" type="checkbox" name="radio-size" id={"sizeRadio" + size.sizeId}
-                                                                        value={size.sizeName} defaultChecked={editedItem.itemSizes.includes(size.sizeName)}
+                                                                        value={size.sizeName} defaultChecked={(editedItem.itemSizes !== undefined) ? editedItem.itemSizes.includes(size.sizeName) : editedItem.itemSizes}
                                                                         onChange={(event) => changeField(event, "size")} />
                                                                     <label className="form-check-label" htmlFor={"sizeRadio" + size.sizeId}>{size.sizeName}</label>
                                                                 </div>
@@ -244,45 +280,47 @@ function ItemEditModal(props) {
                                 {/* image */}
                                 <li className="list-group-item prof-list-edit">
                                     {
-                                        editedItem.itemPhotos.length ?
-                                            (editedItem.itemPhotos.map((photo, index) => {
-                                                return (
-                                                    <div key={index} className="item-img-square">
-                                                        <span className='delete-img-icon' onClick={(event) => handleImageDelete(event, index)}><i className='bi bi-x-lg'></i></span>
-                                                        <img
-                                                            id='item-img-photo'
-                                                            src={photo}
-                                                            draggable={false}
-                                                            alt="..."
-                                                            className="uploaded-image"
-                                                        />
-                                                    </div>
-                                                )
-                                            }))
-                                            : (
-                                                <></>
-                                            )
+                                        editedItem.itemPhotos !== undefined ?
+                                            editedItem.itemPhotos.length ?
+                                                (editedItem.itemPhotos.map((photo, index) => {
+                                                    return (
+                                                        <div key={index} className="item-img-square">
+                                                            <span className='delete-img-icon' onClick={(event) => handleImageDelete(event, index)}><i className='bi bi-x-lg'></i></span>
+                                                            <img
+                                                                id='item-img-photo'
+                                                                src={photo}
+                                                                draggable={false}
+                                                                alt="..."
+                                                                className="uploaded-image"
+                                                            />
+                                                        </div>
+                                                    )
+                                                }))
+                                                : (
+                                                    <></>
+                                                ) : (<></>)
                                     }
                                     {
-                                        (editedItem.itemPhotos.length < 10) ? (
-                                            <div className='images-step-item images-step-item-edit' >
-                                                <div className="image-upload">
-                                                    <label htmlFor="edit-upload-img">
-                                                        <i className='bi bi-images' style={{ width: 100, height: 100, fontSize: '15px' }}></i>
-                                                    </label>
+                                        editedItem.itemPhotos !== undefined ?
+                                            (editedItem.itemPhotos.length < 10) ? (
+                                                <div className='images-step-item images-step-item-edit' >
+                                                    <div className="image-upload">
+                                                        <label htmlFor="edit-upload-img">
+                                                            <i className='bi bi-images' style={{ width: 100, height: 100, fontSize: '15px' }}></i>
+                                                        </label>
 
-                                                    <input
-                                                        id="edit-upload-img"
-                                                        type="file"
-                                                        accept=".jpg,.jpeg,.png"
-                                                        onChange={handleImageChange}
-                                                        style={{ display: 'none' }}
-                                                    />
+                                                        <input
+                                                            id="edit-upload-img"
+                                                            type="file"
+                                                            accept=".jpg,.jpeg,.png"
+                                                            onChange={handleImageChange}
+                                                            style={{ display: 'none' }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ) : (
-                                            <div className="add-ten-img">**لقد قمت بإضافة الحد الأعلى من الصور**</div>
-                                        )
+                                            ) : (
+                                                <div className="add-ten-img">**لقد قمت بإضافة الحد الأعلى من الصور**</div>
+                                            ) : (<></>)
                                     }
 
                                 </li>

@@ -8,12 +8,14 @@ import StarImg from '../../photo/starImg.jpg'
 import BarChartImg from '../../photo/followImg.jpg'
 import { useLocation, useParams } from 'react-router-dom';
 import { useBetween } from 'use-between';
+import { NavItem } from 'reactstrap';
 
 function Rate1(props) {
     const st = useSelector((state) => state.data);
     const loc = useLocation();
     const idS = useRef(0);
     const { idStore, setidStore } = useBetween(st.useShareState);
+     const {rateBusi, setRateBusi } = useBetween(st.useShareState);
     const name = loc.pathname;
 
     useEffect(() => {
@@ -28,11 +30,6 @@ function Rate1(props) {
     var cnt=0;
     
     
-        for (const feature of st.stores.features){
-          if(idStore==feature.properties.id)
-          idS.current=cnt;
-          cnt++;
-        }
        
     const starAndBar = (show, hid, withBg, withoutBg) => {
         document.querySelector(show).style.display = 'block';
@@ -44,11 +41,22 @@ function Rate1(props) {
         document.querySelector(withoutBg).style.background = 'white';
     }
 
-    const str5 = st.stores.features[idS.current].properties.strRate.str5.toString();
-    const str4 = st.stores.features[idS.current].properties.strRate.str4.toString();
-    const str3 = st.stores.features[idS.current].properties.strRate.str3.toString();
-    const str2 = st.stores.features[idS.current].properties.strRate.str2.toString();
-    const str1 =st.stores.features[idS.current].properties.strRate.str1.toString();
+  var str1=0,str2=0,str3=0,str4=0,str5=0;
+  rateBusi.RatePerValueCount.map(item=>{
+    if(item.rateValue==1)
+    str1=rateBusi.rateCount/item.count;
+    if(item.rateValue==2)
+    str2=rateBusi.rateCount/item.count;
+    if(item.rateValue==3)
+    str3=rateBusi.rateCount/item.count;
+    if(item.rateValue==4)
+    str4=rateBusi.rateCount/item.count;
+    if(item.rateValue==5)
+    str5=rateBusi.rateCount/item.count;
+
+  }
+
+  )
     // const hid = () => {
 
     //     document.querySelector('.Rate').style.display = 'none'
@@ -74,7 +82,7 @@ function Rate1(props) {
                     <div className=' stars1' >
                         <StarRatings
 
-                            rating={st.stores.features[idS.current].properties.outOf5}
+                            rating={rateBusi.rateValue}
                             starRatedColor="#FC0"
                             numberOfStars={5}
                             name='rating'
@@ -82,7 +90,7 @@ function Rate1(props) {
                             starSpacing="1px"
 
                         />
-                        <div className=' col-lg-6 rates of5'><h4>{st.stores.features[idS.current].properties.outOf5}/5</h4><span className=' rates allnum '>({st.stores.features[idS.current].properties.num})</span></div>
+                        <div className=' col-lg-6 rates of5'><h4>{rateBusi.rateValue.toFixed(1)}/5</h4><span className=' rates allnum '>({rateBusi.rateCount})</span></div>
                     </div>
                  
                 </div>

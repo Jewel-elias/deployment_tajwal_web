@@ -52,7 +52,20 @@ function EditProfile() {
         //backend
         document.querySelector('.EditProfUser').style.display='none'
     }
-   
+    // const uploadFile = async (e) => {
+    //     const formData = new FormData();
+    //     formData.append("file", file);
+    //     formData.append("fileName", fileName);
+    //     try {
+    //       const res = await axios.post(
+    //         "http://localhost:3000/upload",
+    //         formData
+    //       );
+    //       console.log(res);
+    //     } catch (ex) {
+    //       console.log(ex);
+    //     }
+    //   };
     
    
    

@@ -9,21 +9,21 @@ function BarChart(props) {
     const state = useSelector((state) => state.data);
     /// --------------------drowpDown--------------------------------
     // rate1.scss
-    
+
     const [dropdownOpen, setdropdownOpen] = useState(false);
     let initYear = new Date().getFullYear();
     const [currentYear, setCurrentYear] = useState(0);
-  
+
     const [currentYear1, setCurrentYear1] = useState(initYear);
-    const {idStore, setidStore } = useBetween(state.useShareState);
-    const [numFollow, setnumFollow] = useState(state.stores.features[idStore].properties.numFollow );
+    const { idStore, setidStore, rateBusi, setRateBusi } = useBetween(state.useShareState);
+
 
     function toggle() {
 
         setdropdownOpen(!dropdownOpen);
     }
-   
-    var rateOfFollower=state.stores.features[idStore].properties.rateOfFollower;
+
+    var rateOfFollower = rateBusi.followPerYear;
     const dropdownitemB = rateOfFollower.length ? (
         rateOfFollower.map((item, i) => {
 
@@ -42,22 +42,10 @@ function BarChart(props) {
 
 
     //---------------------------d3----------------------------------
-    const [year, setYear] = useState(props.selectYear);
-    const [data, setData] = useState([
-    rateOfFollower[year].Jan,
-    rateOfFollower[year].Feb,
-    rateOfFollower[year].Mar,
-    rateOfFollower[year].Apr,
-    rateOfFollower[year].May,
-    rateOfFollower[year].Jun,
-    rateOfFollower[year].July,
-    rateOfFollower[year].Aug,
-    rateOfFollower[year].Sept,
-    rateOfFollower[year].Oct,
-    rateOfFollower[year].Nov,
-    rateOfFollower[year].Dec
 
-    ]);
+    const [year, setYear] = useState(0);
+
+    const [data, setData] = useState(rateOfFollower[0].followPerMonth);
 
     const [month, setmonth] = useState(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]);
 
@@ -78,7 +66,7 @@ function BarChart(props) {
             .style('overflow', 'visible')
             .style('margin-top', props.svgMt)
             .style('margin-right', props.svgMr)
-             setYear(1);
+        setYear(1);
 
 
     }, [])
@@ -87,10 +75,14 @@ function BarChart(props) {
     useEffect(() => {
 
         d3.select(svgRef.current).selectAll('rect').data(data).remove();
-       
+
         //  d3.select(svgRef.current).selectAll('g').remove();
         draw();
     }, [data, year])
+    useEffect(() => {
+
+        setRateBusi(rateBusi)
+    }, [rateBusi])
 
     function draw() {
         // setting up scaling
@@ -135,7 +127,7 @@ function BarChart(props) {
             .call(xAxis)
             .attr('transform', `translate(0,${h})`)
             .style('font-size', props.XAxisFontS)
-           
+
 
         //  svg.append('g')
         //     .call(yAxis)
@@ -193,34 +185,24 @@ function BarChart(props) {
 
         setCurrentYear1(year);
 
-        setData([
-           rateOfFollower[i].Jan,
-            rateOfFollower[i].Feb,
-            rateOfFollower[i].Mar,
-            rateOfFollower[i].Apr,
-           rateOfFollower[i].May,
-            rateOfFollower[i].Jun,
-            rateOfFollower[i].July,
-            rateOfFollower[i].Aug,
-           rateOfFollower[i].Sept,
-            rateOfFollower[i].Oct,
-            rateOfFollower[i].Nov,
-            rateOfFollower[i].Dec
+        setData(
+            rateOfFollower[i].followPerMonth
 
-        ])
+
+        )
 
     }
     // --------------------------------end d3-------------------------------
-const display=props.display;
+    const display = props.display;
 
 
     return (
 
         <div className='chartCont'>
-              <div className='FollowerNum'><bdi>عدد المتابعين:</bdi>
-             <h5>51K</h5>
-              </div>
-           
+            <div className='FollowerNum'><bdi>عدد المتابعين:</bdi>
+                <h5>{rateBusi.followerCount}</h5>
+            </div>
+
             <Dropdown isOpen={dropdownOpen} toggle={toggle} >
                 <DropdownToggle caret className='dropDown1'>
 
@@ -233,9 +215,9 @@ const display=props.display;
 
                 </DropdownMenu>
             </Dropdown>
-           
+
             <svg ref={svgRef} ></svg>
-       
+
         </div>
     )
 }

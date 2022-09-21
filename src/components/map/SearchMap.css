@@ -252,8 +252,8 @@
   display: none;
 }
 
-.disw .mapBox {
-  margin-top: -20px;
+.mapBox {
+  z-index: 1;
 }
 
 .sidebar {
@@ -341,6 +341,24 @@ a:hover {
   font-weight: 650;
   margin-right: 0.5em;
   font-size: 1.05em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+  cursor: pointer;
+  width: 135px;
+}
+
+.listings .item .title:hover {
+  z-index: 1;
+  overflow: visible;
+  background-color: rgb(215, 215, 215);
+  height: 30px;
+  width: auto;
+  border-radius: 3px;
+  box-shadow: 0px 6px 9px -5px rgba(56, 56, 56, 0.578);
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .listings .item .title small {
@@ -359,7 +377,7 @@ a:hover {
 .listings .follow {
   position: absolute;
   margin-top: 1%;
-  margin-right: 15.2em;
+  margin-right: 14.8em;
   font-size: 0.9em;
   color: #525151;
   border: 1.5px solid #47A851;
@@ -416,7 +434,7 @@ a:hover {
 
 .starStores {
   margin-top: -0.5em;
-  margin-right: 4.4em;
+  margin-right: 4em;
 }
 
 .goToMoreDetails {
@@ -464,10 +482,9 @@ a:hover {
 
 .mapboxgl-popup-content {
   font: 400 15px/22px "Source Sans Pro", "Helvetica Neue", sans-serif;
-  padding: 0;
-  width: 205px;
   border: 1px solid #8cb590;
   box-shadow: 0px 6px 9px -5px rgba(0, 0, 0, 0.578);
+  width: auto;
 }
 
 .mapboxgl-popup-content .currentNmaeLoc {
@@ -485,6 +502,7 @@ a:hover {
 
 .mapboxgl-popup-content .PopUp {
   margin: 0;
+  width: 180px;
   padding: 10px;
   padding-top: 10px;
   padding-bottom: 5px;
@@ -623,6 +641,104 @@ a:hover {
   color: #8cb590;
 }
 
+.myLoc {
+  /* background-image: url("../../photo/man_raising_hand (1).gif"); */
+  width: 53px;
+  height: 55px;
+  font-size: 2em;
+  background-repeat: no-repeat;
+}
+
+.youAreHear {
+  font: 400 15px/22px "Source Sans Pro", "Helvetica Neue", sans-serif;
+  border: 1px solid #47A851;
+  background-color: #fff;
+  padding: 3px 5px 3px 5px;
+  color: rgb(69, 69, 69);
+  border-radius: 3px;
+  border-bottom-right-radius: 0px;
+  font-size: 1.4em;
+}
+
+.myLocCont {
+  margin-top: -30px;
+}
+
+.MapLoad {
+  position: absolute;
+  width: 100%;
+  height: 530px;
+  background-color: rgb(223, 223, 223);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  font-size: 1.1em;
+  color: rgb(114, 114, 114);
+  padding-top: 16.7%;
+}
+
+.loader-3 {
+  box-sizing: border-box;
+  margin-right: 10px;
+}
+
+.loader-3 {
+  height: 32px;
+  width: 50px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+.loader-3 .pulse {
+  position: relative;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #8cb590;
+  -webkit-animation: loader-3-pulse 1.8s infinite ease-in-out;
+          animation: loader-3-pulse 1.8s infinite ease-in-out;
+  top: 0;
+}
+.loader-3 .pulse:nth-child(3) {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+}
+.loader-3 .pulse:nth-child(2) {
+  -webkit-animation-delay: 0.25s;
+          animation-delay: 0.25s;
+}
+.loader-3 .pulse:nth-child(1) {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+@-webkit-keyframes loader-3-pulse {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes loader-3-pulse {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+.mapboxgl-popup-content .youAreHear1 {
+  width: 45px;
+  height: 5px;
+  padding-left: 2px;
+  padding-bottom: 12px;
+  font-size: 1.1em;
+}
+
 .searchMap .wrapperSe {
   margin-right: -10px;
   margin-top: 20px;
@@ -656,11 +772,12 @@ a:hover {
   pointer-events: none;
   max-height: 280px;
   overflow-y: auto;
-  top: 13px;
-  left: 15px;
+  top: 40px;
+  left: 25px;
   background-color: #fff;
   border-radius: 3px;
   border: 1.6px solid #8cb590;
+  box-shadow: 2px 2px 10px #888;
 }
 
 .autocom-box div {
@@ -712,7 +829,7 @@ a:hover {
   position: relative;
   margin-right: 45px;
   top: -43.26px;
-  font-size: 17px;
+  font-size: 20px;
   color: #8cb590;
 }
 
@@ -774,14 +891,14 @@ a:hover {
   width: 50%;
   cursor: default;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
 }
 
 .searchMap .autocom-box img {
-  width: 35px;
-  height: 35px;
+  width: 37px;
+  height: 37px;
   border-radius: 50%;
 }
 

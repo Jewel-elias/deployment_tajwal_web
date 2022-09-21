@@ -19,8 +19,9 @@
   box-shadow: none;
 }
 
-.nav .fa, .nav .fas {
-  font-size: 1.5em;
+.nav .fa,
+.nav .fas {
+  font-size: 1.42em;
   margin-left: 1px;
 }
 
@@ -93,7 +94,8 @@
   border-radius: 10px;
 }
 
-.nav-link:focus, .nav-link:hover {
+.nav-link:focus,
+.nav-link:hover {
   background: none;
 }
 
@@ -117,9 +119,9 @@
   background-color: transparent;
   border-color: transparent;
   outline: "none";
-  direction: rtl;
-  margin-left: 367%;
+  margin-left: 3%;
   z-index: 1;
+  display: flex;
 }
 
 .navbar-light .navbar-nav .dropDown-Login:focus,
@@ -151,6 +153,23 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.App .RatesCount {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.App .RatesCount .rateCount.rateCount1 {
+  margin-right: 100px;
+}
+
+.rateCount.rateCount1 .fa.fa-star {
+  color: yellow;
+}
+
+.rateCount.rateCount2 .fa.fa-users {
+  color: #47A851;
+}
+
 .App .profileIcon:hover {
   background-color: rgba(184, 184, 184, 0.3);
   border-radius: 10px;
@@ -161,27 +180,26 @@
   display: flex;
   position: absolute;
   left: 76.8%;
-  top: 24px;
+  top: 18px;
   border-left: 2px solid rgb(189, 189, 189);
   height: 45px;
 }
 
 .photoAndName .userPhoto {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  margin-top: -9%;
-  margin-left: -10px;
+  margin-top: -18%;
+  margin-right: -40%;
 }
 
 .dropDown-user.dropdown-toggle.btn.btn-secondary {
-  margin-left: 80px;
+  margin-top: 10px;
+  position: absolute;
 }
 
 .photoAndName .userName {
-  position: absolute;
-  margin-top: -8%;
-  margin-right: 6px;
+  margin-top: -15%;
 }
 
 .Logo {
@@ -254,14 +272,18 @@
   margin-top: 40%;
 }
 
-.footer {
-  background: rgb(29, 29, 29);
+.footer, .footer1 {
+  display: block;
   padding: 15px 0px;
   font-family: "Play", sans-serif;
   text-align: center;
+  margin-top: 200px;
+  z-index: 0;
+  border-top: 0.5px solid rgb(166, 166, 166);
+  border-width: 50%;
 }
 
-.footer .row1 {
+.row1 {
   width: 100%;
   margin: 0.6% 0%;
   padding: 0%;
@@ -270,26 +292,26 @@
   display: flex;
 }
 
-.footer .row1 a {
+.row1 a {
   text-decoration: none;
   color: gray;
   transition: 0.5s;
 }
 
-.footer .row1 a:hover {
+.row1 a:hover {
   color: rgb(140, 181, 144);
 }
 
-.footer .row1 ul {
+.row1 ul {
   width: 100%;
 }
 
-.footer .row1 ul li {
+.row1 ul li {
   display: inline-block;
   margin: 0px 30px;
 }
 
-.footer .row1 a i {
+.row1 a i {
   font-size: 2em;
   margin: 0% 1%;
 }
@@ -299,14 +321,24 @@
     text-align: left;
     padding: 5%;
   }
-
   .footer .row1 ul li {
     display: block;
     margin: 10px 0px;
     text-align: left;
   }
-
   .footer .row1 a i {
+    margin: 0% 3%;
+  }
+  .footer1 {
+    text-align: left;
+    padding: 5%;
+  }
+  .footer1 .row1 ul li {
+    display: block;
+    margin: 10px 0px;
+    text-align: left;
+  }
+  .footer1 .row1 a i {
     margin: 0% 3%;
   }
 }
@@ -323,7 +355,7 @@
   margin-top: 5px;
 }
 
-.footer .linkApp {
+.linkApp {
   background-color: #47A851;
   color: rgb(242, 241, 241);
   padding: 5px;

@@ -49,7 +49,7 @@ function AboutUs() {
                                         {/* <h4>2009-2011</h4> */}
                                         <h4 class="subheading p3 ">Laith Helwany</h4>
                                     </div>
-                                    <div class="timeline-body"><p class="text-muted b3">تخزين البيانات</p></div>
+                                    <div class="timeline-body"><p class="text-muted b3">Backend</p></div>
                                 </div>
                             </li>
                             <li >

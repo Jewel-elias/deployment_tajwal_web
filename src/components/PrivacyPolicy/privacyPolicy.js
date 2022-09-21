@@ -23,22 +23,20 @@
     <article>
 
 
-    <h3> Tech News Daily Privacy Policy </h3>
+    {/* <h3> Tech News Daily Privacy Policy </h3>
 
     <p>
     Your privacy is important to us and we have prepared this Privacy Policy to explain to you how we collect, use, and share information we obtain through your use of the Internet sites, applications and services ('services") that are operated by, controlled by or are affiliate with Mobile Nations, including without limitation SB Nation, The Verge, Polygon, Curbed, Eater, Racked, and Vox.com (collectively, "we," "us" or "our"). This Privacy Policy does not govern our use of any information you provide to us when you call us, write to us, or communicate with us in any manner other than through the Services. Because the Internet is global, information about you that we collect or that you submit may be transferred to, processed in, and held in countries (including the United States) other than the one in which you reside. By using the Services, you explicitly consent to such use of your information and agree to the terms of this Privacy Policy.
 
-    </p>
+    </p> */}
 
-    <br/>
+    {/* <br/> */}
 
-    <h3> 1. Information We Automatically Collect. </h3>
+    <h3>   المعلومات التي تختار إرسالها .1</h3>
 
     <p>
 
-    We automatically collect certain information to help us understand how our users use the Services (which we will refer to in this Privacy Policy collectively as "Usage Data"). For example, each time you visit the Services we may automatically collect your IP address, browser and computer type, access time, the Web page you came from, the URL you go to next, and the Web page(s) that you access during your visit.
-    <br/><br/>
-    We will use such Usage Data to diagnose problems with our servers and software, to administer the Services, and to gather demographic information. Our third-party advertising networks and servers will also provide us reports that will tell us how many ads were presented and clicked on the Services in a manner that does not identify personally any individual.
+    يمكنك زيارة الخدمات دون إخبارنا عن هويتك أو الكشف عن أي معلومات يمكن من خلالها لشخص ما التعرف عليك شخصيًا (والتي سنشير إليها بشكل جماعي في سياسة الخصوصية هذه باسم "المعلومات الشخصية"). ومع ذلك ، إذا كنت ترغب في التسجيل لتصبح عضوًا في الخدمات ، فأنت مطالب بتقديم معلومات شخصية معينة (على سبيل المثال ، اسمك وعنوان بريدك الإلكتروني) ، ونطلب منك أيضًا تقديم اسم مستخدم وكلمة مرور. نستخدم معلوماتك الشخصية لتلبية طلباتك للمنتجات والخدمات ، ولتحسين خدماتنا ، وللاتصال بك من وقت لآخر عنا وعن منتجاتنا وخدماتنا. يمكنك أيضًا اختيار إرسال معلومات إضافية عنك (على سبيل المثال ، جنسك أو تاريخ ميلادك أو الرمز البريدي) بحيث لا يتمكن شخص ما من التعرف عليك شخصيًا (والذي سنشير إليه إجمالاً في سياسة الخصوصية هذه باسم "المعلومات غير الشخصية") . قد نقوم أيضًا بجمع معلومات إضافية عنك عندما تزور بعض ميزات الخدمات أو صفحات بعض شركائنا عندما تتفاعل مع العروض والإعلانات ، وعندما تتصل بنا للحصول على الدعم ، وعندما تقوم بتسجيل الدخول إلى الخدمات بحسابك ، وعندما تكمل الاستبيان ، أو عندما تدخل في الترقيات. أخيرًا ، يمكنك اختيار إرسال اسمك المستعار أو سيرتك الذاتية أو بريدك الإلكتروني أو صورك أو أي معلومات أخرى ترغب في مشاركتها مع مستخدمين آخرين للخدمات (والتي سنشير إليها بشكل جماعي في سياسة الخصوصية هذه باسم "المعلومات المشتركة").
 
     </p>
 

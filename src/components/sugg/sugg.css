@@ -440,29 +440,40 @@
 .ContSugg .btnSeeMore {
   position: relative;
   justify-content: center;
-  margin-left: 42%;
   font-size: 1em;
   font-weight: 600;
   height: 35px;
 }
 
-.ContSuggPages, .ContSuggProd {
+.ContSugg {
+  border-bottom: 100px;
+}
+
+.ContSuggPages,
+.ContSuggProd {
   display: flex;
   flex-flow: row wrap;
   direction: rtl;
   padding-bottom: 10px;
 }
 
-.SuggPages .imgPage, .SuggProducts .imgProd {
+.SuggPages .imgPage,
+.SuggProducts .imgProd {
   width: 165px;
   height: 125px;
   border-radius: 10px;
 }
 
-.SuggPages, .SuggProducts {
+.SuggPages .imgPage {
+  width: 163px;
+}
+
+.SuggPages,
+.SuggProducts {
   direction: rtl;
   margin-right: 45px;
   margin-top: 30px;
+  width: 165px;
   height: 220px;
   font-size: 14px;
   box-shadow: 2px 3px 3px rgb(167, 166, 166);
@@ -473,7 +484,12 @@
   cursor: pointer;
 }
 
-.SuggPages:hover, .SuggProducts:hover {
+.SuggProducts {
+  margin-right: 48px;
+}
+
+.SuggPages:hover,
+.SuggProducts:hover {
   transform: scale(1.05);
   opacity: 0.99;
 }
@@ -486,7 +502,8 @@
   height: 210px;
 }
 
-.SuggProducts, .SuggProducts .imgProd {
+.SuggProducts,
+.SuggProducts .imgProd {
   border-radius: 0px;
 }
 
@@ -500,6 +517,7 @@
   border-radius: 10px;
   padding: 7px;
   font-size: 1.16em;
+  direction: rtl;
 }
 
 .SuggProducts .info {
@@ -511,26 +529,38 @@
   padding: 7px;
   height: 90px;
   color: rgb(246, 246, 246);
+  direction: rtl;
 }
 
-.SuggPages .ratePages {
+.SuggProducts .storeProd,
+.SuggProducts1 .storeProd {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.SuggPages .ratePages,
+.SuggProducts .ratePages {
   position: absolute;
   border-radius: 5px;
   background-color: #fff;
   padding: 2px;
   font-size: 1em;
-  margin-right: 125px;
+  margin-right: 123px;
   margin-top: 2px;
   font-weight: 500;
 }
 
-.SuggPages .fa.fa-star {
+.SuggPages .fa.fa-star,
+.SuggProducts .fa.fa-star,
+.SuggProducts1 .fa.fa-star {
   color: rgb(231, 231, 33);
   background: none;
   font-size: 14px;
 }
 
-.SuggPages .fa.fa-cutlery, .SuggPages .fas.fa-tshirt {
+.SuggPages .fa.fa-cutlery,
+.SuggPages .fas.fa-tshirt {
   color: #888;
   margin-left: 3px;
 }
@@ -541,8 +571,12 @@
   font-size: 18px;
 }
 
-.SuggPages .namePages, .SuggProducts .nameProd {
+.SuggPages .namePages,
+.SuggProducts .nameProd {
   font-weight: 650;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .ContSugg .suggToday {
@@ -593,4 +627,9 @@
 
 .skeleton-text-sugg:last-child {
   margin-bottom: 0.9em;
+}
+
+.ContSugg p {
+  text-align: center;
+  margin-top: 15px;
 }/*# sourceMappingURL=sugg.css.map */

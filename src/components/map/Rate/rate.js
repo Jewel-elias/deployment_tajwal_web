@@ -6,45 +6,18 @@ import Rate1 from './rate1';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import '../Rate/rate.css'
 import { NavLink } from 'react-router-dom';
+import { useBetween } from 'use-between';
 
 
 function Rate(props) {
     const state = useSelector((state) => state.data);
     const [dis,setDisplay]= useState(false);
+   
     let currentYear = new Date().getFullYear();
     var mrROfInfo = 0;
     var cnt = 0;
 
-    const prevIcon = () => {
-        mrROfInfo = mrROfInfo - 4;
-    //   alert(mrROfInfo);
-        cnt++;
-        document.querySelector(".Rcont .carousel-control-next-icon").style.display = 'block';
-        document.querySelector(".RateList").style.marginRight = mrROfInfo.toString() + '%';
-
-        if (mrROfInfo > 0) {
-            document.querySelector(".Rcont .carousel-control-next-icon").style.display = 'none';
-        }
-        if (cnt == 3) {
-            document.querySelector(".Rcont .carousel-control-prev-icon").style.display = 'none';
-
-        }
-
-
-    }
-    const nextIcon = () => {
-        if (mrROfInfo != 0)
-            mrROfInfo = mrROfInfo + 4;
-        //   alert(mrROfInfo);
-        document.querySelector(".Rcont .carousel-control-prev-icon").style.display = 'block';
-        document.querySelector(".RateList").style.marginRight = mrROfInfo.toString() + '%';
-
-        if (mrROfInfo >= 0) {
-            document.querySelector(".Rcont .carousel-control-next-icon").style.display = 'none';
-        }
-        cnt--;
-
-    }
+   
     const hid=()=>{
         // alert(1);
         Array.from(document.querySelectorAll("a.nav-link"))
@@ -71,7 +44,7 @@ function Rate(props) {
                     <div className='rates stars'>
                         <StarRatings
 
-                            rating={state.outOf5}
+                            rating={4}
                             starRatedColor="#FC0"
                             numberOfStars={5}
                             name='rating'

@@ -12,6 +12,7 @@ import $ from 'jquery';
 import '../SearchMap.scss'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Meery from '../../photo/meery.jpg'
+import Axios from 'axios';
 
 mapboxgl.accessToken =
     'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -27,97 +28,177 @@ const MapBox = () => {
 
     const state = useSelector((state) => state.data);
     const { lati, long } = useBetween(state.useShareState);
-    const { activeFiltra, setactiveFiltra } = useBetween(state.useShareState);
-    const [follow, setFollow] = useState([]);
+
     const [mapLoad, setLoad] = useState(false);
-    const { dropdownOpenLogin, setdropdownOpenLogin } = useBetween(state.useShareState);
+    const lazyRoute = useRef('walking');
+    const { dropdownOpenLogin, setdropdownOpenLogin, resStor, setStore } = useBetween(state.useShareState);
     const { idStore, setidStore, allMess, setallMess, dirWay, setDirWay } = useBetween(state.useShareState);
-    const { index, setIndex } = useBetween(state.useShareState);
-    const { flyTo, setFlyTo } = useBetween(state.useShareState);
     const wayRoute = useRef('walking');
     const lazyWay = useRef(false);
     const id = useRef(0);
+    const timeW = useRef([]);
+    const disRef = useRef([]);
     const feat = useRef({});
     const geometry = useRef([]);
-    const [messages, setMessages] = useState(state.currentUser[0].messages);
-    const { isUserLogin, setisUserLogin } = useBetween(state.useShareState);
+    const [indexFoll, setFollIndex] = useState(600);
+    const [lazyFoll, setLazyFoll] = useState(false);
+    const { isUserLogin, setisUserLogin, profileData, setProfileData,token } = useBetween(state.useShareState);
     const [lng, setLng] = useState(long);
+    var follows = useRef([]);
     const [lat, setLat] = useState(lati);
+
     const [zoom, setZoom] = useState(15.4);
-    var stores = state.stores;
 
     const [dropdownStoresOpen, setdropdownStoresOpen] = useState(false);
     const {
-        selectMessId, setSelectMessId, messStore, setMessStore, } = useBetween(state.useShareState);
+        selectMessId, setSelectMessId, messStore, setMessStore } = useBetween(state.useShareState);
     const element = $(`#${'selectMess'}`);
     element.animate({
         scrollTop: element.prop("scrollHeight")
     }, 500);
 
+    for (var i = 0; i <= 600; i++) {
+        follows.current.push({ followId: 0, stateFollow: false, NumId: i });
+    }
+    useEffect(() => {
+        // new WOW.WOW({
+        //     live: false
+        // }).init();
+
+       
+        if (profileData.followedBusiness != undefined) {
+            var cnt = 0;
+            stores.map(item => {
+                follows.current[cnt].followId = item._id;
+                cnt++;
+
+            })
+            profileData.followedBusiness.map(item => {
+                follows.current.map(item1 => {
+
+                    if (item._id == item1.followId) {
+                        item1.stateFollow = true;
+                    }
+
+                })
+            })
+        }
 
 
+
+        setProfileData(profileData);
+    }, [profileData,follows.current])
     // stores.features.forEach((store, i) => {
     //     store.properties.id = i + 1;
     // });
 
 
-    function foll(followStor) {
+    function foll(item) {
 
         if (isUserLogin == false)
             setdropdownOpenLogin(!dropdownOpenLogin)
         else {
-            follow[followStor] = !follow[followStor];
+            var cnt = 0;
+            follows.current.map(item1 => {
+                if (item._id == item1.followId) {
+                    item1.stateFollow = !item1.stateFollow;
+                    if(item1.stateFollow === true){
+                        const data = {
+                            "businessId": item._id
+                        };
+        
+                        const headers = {
+                            'Authorization': 'Bearer ' + token,
+                            "content-type": "application/json;charset=UTF-8"
+                        };
+                        Axios.post("https://tajwal2.herokuapp.com/api/follow", data, { headers })
+                            .then(res => {
+                                console.log(res.data)
+                            })
+                            .catch(err => console.log(err));
+                    }
+                    else{
+                       
+        
+                        const headers = {
+                            'Authorization': 'Bearer ' + token,
+                            "content-type": "application/json;charset=UTF-8"
+                        };
+                        Axios.delete(`https://tajwal2.herokuapp.com/api/follow/${item._id}`, { headers })
+                            .then(res => {
+                                console.log(res.data)
+                            })
+                            .catch(err => console.log(err));
 
-            follow.forEach((store, i) => {
-                if (i == followStor) {
-                    follow[i] = follow[followStor];
+                    }
+                    //back
+                    setLazyFoll(!lazyFoll)
 
                 }
+                cnt++;
 
-            });
-            const newFoll = [...follow];
-            setFollow(newFoll)
-            if (follow == false) {
-                let currentYear = new Date().getFullYear();
-                let currentMonth = new Date().getMonth() + 1;
-                state.numOfFollower += 1;
-                // (state.numOfFollower);
-                //backend
-            }
-            else {
-                state.numOfFollower -= 1;
-                //backend
-                //    (state.numOfFollower);
-            }
+
+            })
+
+
+
+
 
         }
     }
+    const stores = resStor;
 
 
+    if (disRef.current[0] != undefined) {
+       
+        stores.map(item => {
+           
+              for(var i=0;i<disRef.current.length ; i++){
+                if (item._id == disRef.current[i].id) {
 
-    const storCont = stores.features.length ? (
-        stores.features.sort((a, b) => a.properties.distance - b.properties.star.distance).map(item => {
+                    item.distance = disRef.current[i].num;
+                    item.timeWalk = timeW.current[i].num;
+                }
+            }
+           
+            // alert(item.distance)
+        })
+
+    }
+
+    var cnt1 = -1;
+    const storCont = stores.length ? (
+
+        stores.sort((a, b) => a.timeWalk - b.timeWalk).map(item => {
+            // if(item.distance!=undefined)
+            var index = 600;
+            for (var i = 0; i < follows.current.length; i++) {
+                if (item._id == follows.current[i].followId)
+                    index = follows.current[i].NumId;
+
+            }
+
             return (
-                <div className='item' key={item.properties.id} id='item'>
+                <div className='item' key={item._id} id='item'>
                     <div className='linkCont'>
-                        <img src={item.properties.photo} className='photoStor'></img>
-                        <a className='title' id='title' href='#'><bdi>{item.properties.name}</bdi></a>
-                        <div className='follow' onClick={() => foll(item.properties.id)}
+                        <img src={item.image.url} className='photoStor'></img>
+                        <a className='title' id='title' href='#'><bdi>{item.name}</bdi></a>
+                        <div className='follow' onClick={() => foll(item)}
                             style={{
-                                color: follow[item.properties.id] == true && isUserLogin == true ? '#FFFFFF' : '#525151',
-                                backgroundColor: follow[item.properties.id] == true && isUserLogin == true ? '#47A851' : '#FFFFFF'
+                                color: follows.current[index].stateFollow == true && isUserLogin == true ? '#FFFFFF' : '#525151',
+                                backgroundColor: follows.current[index].stateFollow == true && isUserLogin == true ? '#47A851' : '#FFFFFF'
                             }}>متابعة</div>
                     </div>
                     <div className='detailsCont'>
-                        <i className={`${item.properties.type == 'مطعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i>
-                        <span className={`details ${item.properties.type == 'مطعم' ? "cutlery" : "tshirt"}`}><bdi>{item.properties.type}</bdi></span>
-                        <div className='starStores' >  <StartRate id={item.properties.id} /></div>
+                        <i className={`${item.businessTypeName.name == 'مطاعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i>
+                        <span className={`details ${item.businessTypeName.name == 'مطاعم' ? "cutlery" : "tshirt"}`}><bdi>{item.businessTypeName.name}</bdi></span>
+                        <div className='starStores' >  <StartRate id={item._id} /></div>
 
                     </div>
-                    <div className='disWay'><bdi>  <i className={`${dirWay == 'walking' ? "fas fa-walking" : "fas fa-car"}`}></i><span className='time'>{item.properties.timeWalk} دقيقة </span></bdi></div>
+                    <div className='disWay'><bdi>  <i className={`${dirWay == 'walking' ? "fas fa-walking" : "fas fa-car"}`}></i><span className='time'>{item.timeWalk} دقيقة </span></bdi></div>
 
                     {/* <div className='disStore' id='disStore'><bdi> يبعد <span className='disNum'>{item.properties.distance} </span>  كم </bdi></div> */}
-                    <NavLink to='/ProfileBuisness' style={{ textDecoration: 'none' }}> <div className='goToMoreDetails'>تفاصيل</div></NavLink>
+                    <NavLink to='/ProfileBuisness' state={{profileItem:item}} style={{ textDecoration: 'none' }}> <div className='goToMoreDetails'>تفاصيل</div></NavLink>
 
 
 
@@ -125,69 +206,14 @@ const MapBox = () => {
             )
         })) : (<p><bdi>لا توجد متاجر حتى الآن!!</bdi></p>)
 
-    function activFiltra(id) {
-
-
-        setactiveFiltra(true);
-        setdropdownStoresOpen(false);
-        // (id)
-
-
-        document.querySelector('.Fltera').style.display = 'none';
-        // state.currentUser[0].messages.map((item, i) => {
-
-        //     if (item.storeId == id) { setIndex(i); setallMess(item.allMess) }
-        //     else {
-        //         const updatemess = [
-
-        //             ...messages,
-
-        //             {
-
-        //                 storeId: stores.features[id-1].properties.id,
-
-        //                 name: stores.features[id-1].properties.name,
-
-        //                 img: stores.features[id-1].properties.photo,
-        //                 loc: stores.features[id-1].properties.street,
-        //                 allMess: [],
-
-        //             }
-        //         ];
-
-        //         setallMess([]);
-        //         setMessages(updatemess)
-        //     }
-
-        // })
-        // (idStore);
-
-        // Array.from(document.querySelectorAll("div.Filter-list"))
-        //     .forEach(function (val) {
-        //         val.style.color = 'rgb(228, 226, 226)';
-        //     });
-        // Array.from(document.querySelectorAll("a"))
-        //     .forEach(function (val) {
-        //         val.style.color = 'rgb(228, 226, 226)';
-        //     });
-        // Array.from(document.querySelectorAll("i.fil"))
-        //     .forEach(function (icon) {
-        //         icon.style.color = 'rgb(140, 181, 144)';
-        //     });
-        setidStore(id);
-    }
-
-    useEffect(() => {
-        stores.features.forEach((store, i) => {
-            follow.push(store.properties.follow);
 
 
 
-        });
-    }, [])
     useEffect(() => {
         setLng(long);
         setLat(lati);
+        setStore(resStor);
+
 
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
@@ -202,9 +228,9 @@ const MapBox = () => {
                 enableHighAccuracy: true
             },
             // When active the map will receive updates to the device's location as it changes.
-            trackUserLocation: true,
+            // trackUserLocation: true,
             // Draw an arrow next to the location dot to indicate which direction the device is heading.
-            showUserHeading: true
+            // showUserHeading: true
         }));
         // map.addControl(
         //     new MapboxDirections({
@@ -213,7 +239,7 @@ const MapBox = () => {
         //     }),
         //     'top-right'
         //     );
-        map.on('onclick', () => {
+        map.on('move', () => {
             setLng(map.getCenter().lng.toFixed(4));
             setLat(map.getCenter().lat.toFixed(4));
             setZoom(map.getZoom().toFixed(2));
@@ -225,14 +251,42 @@ const MapBox = () => {
             * This is where your '.addLayer()' used to be, instead
             * add only the source without styling a layer
             */
+            ////// my Location///////////////////////////////
+            const myLoc = document.createElement('div');
+            myLoc.className = 'myLoc';
+
+            const youAreHear = document.createElement('div');
+            youAreHear.className = 'youAreHear';
+            youAreHear.innerHTML = 'انت هنا'
+            const myLocCont = document.createElement('div');
+            myLocCont.appendChild(youAreHear);
+            myLocCont.appendChild(myLoc);
+            myLocCont.className = 'myLocCont';
+            new mapboxgl.Marker(myLocCont)
+
+                .setLngLat([long, lati])
+                .addTo(map);
+
+            // new mapboxgl.Popup()
+            //     .setLngLat([long, lati])
+            //     .setHTML(`<div><div class=youAreHear1>انت هنا</div></div>`)
+            //     .addTo(map);
+
+
+            ////////////////////////////////////////////////////////////////////////////////
+            document.getElementsByClassName('MapLoad').display = 'none'
             map.addSource('places', {
                 'type': 'geojson',
                 'data': stores
             });
-            for (const store of stores.features) {
 
+            var cntTime = 0;
+            for (const store of stores) {
+                var coordinates5 = [ store.location.longitude,store.location.latitude]
+                // var coordinates5 = [36.7194282, 34.722394]
+                getTime(store, coordinates5, cntTime);
+                cntTime++;
 
-                getTime(store.properties, store.geometry.coordinates, 'walking');
 
 
             }
@@ -242,10 +296,17 @@ const MapBox = () => {
             addMarkers();
             setLoad(true);
 
-            if (flyTo == true) {
-                flyToStore(state.stores.features[2]);
-                createPopUp(state.stores.features[2]);
-                getRoute(2, state.stores.features[2].geometry.coordinates)
+            if (idStore != 'meery') {
+                var cnt = 0;
+                for (const feature of stores) {
+
+                    if (idStore === feature._id) {
+                        flyToStore(feature);
+                        createPopUp(feature);
+                    }
+                    cnt++;
+                    // getRoute(2, state.stores.features[2].geometry.coordinates)
+                }
             }
 
             /* Get the coordinate of the search result */
@@ -270,11 +331,11 @@ const MapBox = () => {
             buildLocationList(stores);
 
             /* Open a popup for the closest store. */
-            createPopUp(stores.features[0]);
+            createPopUp(stores[0]);
 
             /** Highlight the listing for the closest store. */
             const activeListing = document.getElementById(
-                `listing-${stores.features[0].properties.id}`
+                `listing-${stores[0]._id}`
             );
             activeListing.classList.add('active');
 
@@ -300,16 +361,18 @@ const MapBox = () => {
 
         function addMarkers() {
             /* For each feature in the GeoJSON object above: */
-            for (const marker of stores.features) {
+
+            for (const marker of stores) {
                 /* Create a div element for the marker. */
+
                 const el = document.createElement('i');
                 //    const name=el.appendChild(document.createElement('div'));
 
                 /* Assign a unique `id` to the marker. */
-                el.id = `marker-${marker.properties.id}`;
+                el.id = `marker-${marker._id}`;
                 /* Assign the `marker` class to each marker for styling. */
 
-                el.className = `marker  ${marker.properties.type == 'مطعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`;
+                el.className = `marker  ${marker.businessTypeName.name == 'مطاعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`;
                 // el.src="https://pic.onlinewebfonts.com/svg/img_465785.png"
 
 
@@ -318,10 +381,13 @@ const MapBox = () => {
                 * Create a marker using the div element
                 * defined above and add it to the map.
                 **/
+                
+                var coordinates = [marker.location.longitude, marker.location.latitude]
+                // var coordinates = [36.7194282, 34.722394]
                 new mapboxgl.Marker(el, { offset: [0, -23] })
-                    .setLngLat(marker.geometry.coordinates)
+                    .setLngLat(coordinates)
                     .addTo(map);
-                   
+
                 /**
                 * Listen to the element and when it is clicked, do three things:
                 * 1. Fly to the point
@@ -329,12 +395,17 @@ const MapBox = () => {
                 * 3. Highlight listing in sidebar (and remove highlight for all other listings)
                 **/
                 el.addEventListener('click', (e) => {
-                    activFiltra(marker.properties.id);
+                    // activFiltra(marker.properties.id);
                     /* Fly to the point */
                     flyToStore(marker);
                     /* Close all other popups and display popup for clicked store */
 
                     createPopUp(marker);
+                    id.current = marker._id;
+                    var coordinates7 = [ marker.location.longitude,marker.location.latitude,]
+                    geometry.current = coordinates7;
+                    feat.current = marker;
+                    lazyWay.current = true;
                     /* Highlight listing in sidebar */
                     const activeItem = document.getElementsByClassName('active');
                     e.stopPropagation();
@@ -348,34 +419,28 @@ const MapBox = () => {
                 });
 
             }
-            //////// my Location///////////////////////////////
-            // const myLoc = document.createElement('div');
-          
-            // myLoc.className = 'myLoc';
-    
-           
-            // new mapboxgl.Marker(myLoc)
-           
-            //     .setLngLat([long, lati])
-            //     .addTo(map);
-          
+
+
         }
-        
-       
+
+
 
         const disWalk = document.getElementById('disWalk');
         const disDrive = document.getElementById('disDrive');
+        var cntTime1 = 0;
         disWalk.addEventListener('click', () => {
             wayRoute.current = 'walking';
+            cntTime1 = 0;
+            for (const store of stores) {
+                var coordinates1 = [store.location.longitude,store.location.latitude]
+                // var coordinates1 = [36.7194282, 34.722394]
 
-            for (const store of state.stores.features) {
-
-                getTime(store.properties, store.geometry.coordinates);
-
-
+                getTime(store, coordinates1, cntTime1);
+                cntTime1++;
 
 
             }
+
             if (lazyWay.current == true) {
                 getRoute(id.current, geometry.current);
                 createPopUp(feat.current);
@@ -384,12 +449,16 @@ const MapBox = () => {
         })
         disDrive.addEventListener('click', () => {
             wayRoute.current = 'driving'
-
+            cntTime1 = 0;
 
             document.getElementById('disDrive').style.color = 'red';
-            for (const store of state.stores.features) {
+            for (const store of stores) {
+                var coordinates2 = [ store.location.longitude,store.location.latitude]
+                // var coordinates2 = [36.7194282, 34.722394]
 
-                getTime(store.properties, store.geometry.coordinates);
+                getTime(store, coordinates2, cntTime1);
+                cntTime1++;
+
 
 
             }
@@ -401,13 +470,11 @@ const MapBox = () => {
             }
 
         })
+
         async function getRoute(item, end) {
             // make a directions request using cycling profile
             // an arbitrary start will always be the same
             // only the end or destination will change
-
-
-
             const query = await fetch(
                 `https://api.mapbox.com/directions/v5/mapbox/${wayRoute.current}/${long},${lati};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
                 { method: 'GET' }
@@ -415,6 +482,7 @@ const MapBox = () => {
             const json = await query.json();
             const data = json.routes[0];
             const route = data.geometry.coordinates;
+            // alert(route);
 
             const geojson = {
                 type: 'Feature',
@@ -477,6 +545,7 @@ const MapBox = () => {
             var lineCoordinates = [];
 
             for (var i = 0; i < route.length; i++) {
+
                 lineCoordinates.push([route[i][0], route[i][1]]);
 
 
@@ -522,50 +591,60 @@ const MapBox = () => {
         }
 
 
-        async function getTime(store, end) {
+        async function getTime(store, end, cntTime) {
             // make a directions request using cycling profile
             // an arbitrary start will always be the same
             // only the end or destination will change
-
+            //   alert(cntTime);
+            
 
             const query = await fetch(
                 `https://api.mapbox.com/directions/v5/mapbox/${wayRoute.current}/${long},${lati};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
                 { method: 'GET' }
-            );
+            )
+
 
             const json = await query.json();
             const data = json.routes[0];
+            //  if(cntTime==stores.length - 1)
+            //  {
+            //     timeW.current=[];
+            //     disRef.current=[];
+
+            //  }
+            if (lazyRoute.current != wayRoute.current && cntTime == 0) {
 
 
-            store.timeWalk = Math.floor(data.duration / 60);
-            const dis = data.distance;
-            if (dis >= 1000) {
+                lazyRoute.current = wayRoute.current;
+                timeW.current = [];
+                disRef.current = [];
+               
+                
+
+            }
+
+            timeW.current.push({ id: store._id, num: (Math.round(data.duration / 60)) });
+           
+            if (data.distance >= 1000) {
                 store.distance =
-                    `${Math.round(dis) / 1000} كيلومتر`;
+                    `${Math.round(data.distance) / 1000} كيلومتر`;
+                    console.log(store.distance)
             }
             else {
                 store.distance =
-                    `${dis} متر`;
+                    `${data.distance} متر`;
             }
+            
+
+            disRef.current.push({ id: store._id, num: Math.round(data.distance) / 1000 });
+
+
+
+
 
             // store.distance = store.distance.toFixed(3);
             // alert(store.distance);
-            stores.features.sort((a, b) => {
 
-
-                if (a.properties.timeWalk > b.properties.distancetimeWalk) {
-
-                    return 1;
-
-                }
-                if (a.properties.timeWalk < b.properties.timeWalk) {
-
-                    return -1;
-                }
-                return 0; // a must be equal to b
-            });
-
-            createPopUp(store);
 
 
         }
@@ -578,44 +657,55 @@ const MapBox = () => {
 
 
             ];
-            for (let i = 1; i <= stores.features.length; i++) {
+            for (let i = 1; i <= stores.length; i++) {
                 // stores.features[i - 1].properties.id = i;
                 // alert(stores.features[i - 1].properties.id);
                 // alert(stores.features[i - 1].properties.name);
+
                 const obj = {
-                    'storeId': stores.features[i - 1].properties.id, 'name': stores.features[i - 1].properties.name,
-                    'photo': stores.features[i - 1].properties.photo,
-                    'geo': stores.features[i - 1]
+                    'storeId': stores[i - 1]._id, 'name': stores[i - 1].name,
+                    'photo': stores[i - 1].image.url,
+                    'geo': stores[i - 1]
                 }
+
                 suggestions.push(obj)
 
             }
 
-            for (const store of stores.features) {
-                /* Add a new listing section to the sidebar. */
 
+            for (const store of stores) {
+                /* Add a new listing section to the sidebar. */
                 const link = document.getElementById('title');
-                link.id = `link-${store.properties.id}`;
+
+                link.id = `link-${store._id}`;
 
 
                 link.addEventListener('click', function () {
                     var cnt = 0;
 
-                    for (const feature of stores.features) {
+                    for (const feature of stores) {
 
 
-                        if (this.id === `link-${feature.properties.id}`) {
+                        // alert(this.id);
+                        // alert(`link-${feature._id}`);
+                        if (this.id === `link-${feature._id}`) {
 
-                            setidStore(cnt)
+                            setidStore(feature._id)
+
                             flyToStore(feature);
-                            getRoute(feature.properties, feature.geometry.coordinates);
-                            id.current = feature.properties.id;
-                            geometry.current = feature.geometry.coordinates;
+                            var coordinates2 = [ feature.location.longitude,feature.location.latitude]
+
+
+                            getRoute(feature, coordinates2);
+                            getTime(feature, coordinates2, -1)
+                            id.current = feature._id;
+                            geometry.current = coordinates2;
                             feat.current = feature;
 
                             lazyWay.current = true;
                             createPopUp(feature);
-                            activFiltra(feature.properties.id);
+
+                            // activFiltra(feature.properties.id);
 
 
 
@@ -668,7 +758,6 @@ const MapBox = () => {
                     icon.onclick = () => {
 
                         linkTag.setAttribute("href", webLink);
-                        console.log(webLink);
                         linkTag.click();
                     }
 
@@ -710,23 +799,19 @@ const MapBox = () => {
 
                 var idSugg = id.current;
 
-                for (const feature of stores.features) {
-                    if (idSugg == feature.properties.id) {
+                for (const feature of stores) {
+                    if (idSugg == feature._id) {
                         flyToStore(feature);
-                        id.current = feature.properties.id;
+                        id.current = feature._id;
                         // alert(id.current)
-                        geometry.current = feature.geometry.coordinates;
-                        getRoute(feature.properties.id, geometry.current);
+                        var coordinates3 = [ feature.location.longitude,feature.location.latitude]
+                        // var coordinates3 = [36.7194282, 34.722394]
+                        geometry.current = coordinates3;
+                        getRoute(feature._id, geometry.current);
                         createPopUp(feature);
 
                     }
                 }
-
-
-
-
-
-
 
 
 
@@ -735,7 +820,7 @@ const MapBox = () => {
                 setallMess([]);
                 messStore.map((item, i) => {
 
-                    if (item.storeId == idStore) {
+                    if (item._id == idStore) {
                         setallMess(item.allMess); setSelectMessId(i);
                         b = true
                     }
@@ -776,9 +861,11 @@ const MapBox = () => {
         * a given center point.
         **/
         function flyToStore(currentFeature) {
-            alert(currentFeature.geometry.coordinates);
+            // alert(currentFeature.geometry.coordinates)
+            var coordinates3 = [currentFeature.location.longitude,currentFeature.location.latitude]
+            // var coordinates3 = [36.7194292, 34.722356];
             map.flyTo({
-                center: currentFeature.geometry.coordinates,
+                center: coordinates3,
                 zoom: 15.2,
                 bearing: 0,
 
@@ -805,34 +892,39 @@ const MapBox = () => {
         **/
         function createPopUp(currentFeature) {
             // alert(currentFeature.geometry.coordinates)
+
             const popUps = document.getElementsByClassName('mapboxgl-popup');
             if (popUps[0]) popUps[0].remove();
-
-
+            var coordinates4 = [ currentFeature.location.longitude,currentFeature.location.latitude]
+            // var coordinates4 = [36.7194292, 34.722356]
             const popup = new mapboxgl.Popup({ closeOnClick: true })
-                .setLngLat(currentFeature.geometry.coordinates)
+                .setLngLat(coordinates4)
                 .setHTML(
                     `<div>
-                    <div class='currentNmaeLoc'><img src=${currentFeature.properties.photo} class='currentFeatureImg' />
-                        ${currentFeature.properties.name}</div>
+                    <div class='currentNmaeLoc'><img src=${currentFeature.image.url} class='currentFeatureImg' />
+                        ${currentFeature.name}</div>
                     <div class="PopUp">
-                        <div class='disPopUp'>${currentFeature.properties.distance}</div>
+                        <div class='disPopUp'>${currentFeature.distance}</div>
                         <i class='fa fa-clock-o'></i>
-                        <span>${currentFeature.properties.state} </span>
+                        <span>مفتوح الان</span>
                        
                          
                         </div>
                     </div>
                 `
 
+
                 )
                 .addTo(map);
+            getRoute(currentFeature, coordinates4);
+
         }
+
         // Clean up on unmount
         return () => { map.remove(); clearInterval(getTime); }
 
 
-    }, [long, lati]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [long, lati, resStor.length]); // eslint-disable-line react-hooks/exhaustive-deps
     function toggle() {
 
         if (mapLoad)
@@ -866,7 +958,7 @@ const MapBox = () => {
 
     return (
         <div className='mapBox'>
-            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"></link>
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossOrigin="anonymous"></link>
             <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet"></link>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
@@ -919,14 +1011,79 @@ const MapBox = () => {
 
             </div>
 
-
+            <div className='MapLoad'>
+                <span className="box-3">
+                    <div className="loader-3">
+                        <div className="pulse"></div>
+                        <div className="pulse"></div>
+                        <div className="pulse"></div>
+                    </div>
+                </span>
+                <span>يتم تحميل الخريطة , الرجاء الانتظار قليلاً</span> </div>
             <div className='map-container' ref={mapContainerRef} style={{ width: '100%', height: '530px' }} />
-            <div>
+            {/* <div>
                 Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-            </div>
+            </div> */}
             {/* <div className='Fltera TodoItem'>
                 <TodoItem />
             </div> */}
+            <footer style={{ position: 'relative' }}>
+                <div className="footer1" style={{ position: 'relative' }}>
+                    <div className="row1">
+                        <ul>
+                            <li><a href="#"><i className="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i className="fa fa-instagram"></i></a></li>
+                            <li><a href="#"><i className="fa fa-youtube"></i></a></li>
+                            <li><a href="#"><i className="fa fa-twitter"></i></a></li>
+                        </ul>
+                    </div>
+
+                    <div className="row1 footerWord">
+                        <ul>
+
+                            <NavLink to='/ContactUs' style={{ textDecoration: 'none' }}>
+                                <li><a href="#">تواصل معنا</a></li>
+                            </NavLink>
+                            <NavLink to='/ourServices' style={{ textDecoration: 'none' }}>
+                                <li><a href="#">خدماتنا</a></li>
+                            </NavLink>
+                            <NavLink to='/PrivacyPolicy' style={{ textDecoration: 'none' }}>
+                                <li><a href="#">سياسة الخصوصية</a></li>
+                            </NavLink>
+                            <NavLink to="/AboutUs" style={{ textDecoration: 'none' }}>
+                                <li><a href="#">من نحن؟</a></li>
+                            </NavLink>
+                        </ul>
+                    </div>
+
+                    <div className="row1">
+                        <ul className='FootDes'>
+                            <div className='footerWord first'>
+                                {/* <bdi>
+                  Tajwal
+                </bdi> */}
+                                <bdi>
+                                    حقوق الطبع و النشر
+                                </bdi>
+                                <bdi> - 2022 © </bdi>
+                                <bdi>جميع الحقوق محفوظة || تصميم: ميري عوض </bdi>
+                                <bdi>  &  جويل الياس</bdi>
+                            </div>
+                        </ul>
+                    </div>
+                    <div className='row1 footerWord'>
+                        <ul>
+                            <bdi>
+                                <b></b>
+                                يمكنك تحميل التطبيق من خلال الرابط: <a href='#' className='linkApp' style={{ color: 'rgb(242, 241, 241)' }}>من هنا</a>
+                            </bdi>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+            </footer >
         </div >
     );
 };

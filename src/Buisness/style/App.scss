@@ -57,7 +57,9 @@ body {
     width: 100%;
     font-size: 20px;
 }
-
+.fa.fa-paper-plane{
+    font-size:15px;
+}
 .left-b {
     border-left: solid 0.05em $opacity-green;
 }
@@ -124,18 +126,20 @@ body {
 }
 
 // --------------Buisness Profile Statistics--------------
-.statistics-col{
+.statistics-col {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
 }
+
 .green-b-statistics {
     @include green-border();
     background-color: $first-color;
     display: flex;
     align-items: center;
     justify-content: center;
+
     margin: {
         left: 0;
         top: 0;
@@ -254,7 +258,7 @@ body {
 .buisness-label-profile-edit {
     display: inline;
     width: 90%;
-    line-height: 1;
+    line-height: 1.8;
 
     border: {
         top: none;
@@ -333,9 +337,10 @@ body {
 }
 
 // WORK HOURS MODAL
-.work-hours{
+.work-hours {
     font-size: 20px;
 }
+
 .subheading-work-hours {
     color: gray;
     font-size: 0.4em;
@@ -446,9 +451,29 @@ body {
     }
 }
 
+.list-items-load .fa.fa-star {
+
+    color: rgb(231, 231, 33);
+    // box-shadow: 2px 3px 3px rgb(212, 214, 54);
+    background: none;
+
+}
+
+.card.card-me .ratePages {
+    position: absolute;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 2px;
+    font-size: 1em;
+    margin-right: 150px;
+    margin-top: 2px;
+    font-weight: 500;
+    width:100px;
+}
+
 .card-image {
     width: 100%;
-    height: 40%;
+    height: 44%;
     border-bottom-left-radius: 10%;
     border-bottom-right-radius: 10%;
 }
@@ -472,7 +497,7 @@ body {
     height: 30em;
 
     @media screen and (min-width: 1366px) and (max-width: 1366px) {
-        font-size: 0.85em;
+        font-size: 0.89em;
         height: 4.5em;
         font-weight: lighter;
         color: rgb(102, 101, 101);
@@ -482,6 +507,7 @@ body {
 
 .card-price-me {
     margin-top: -0.1em;
+    margin-right: -0.5em;
 }
 
 .price-number {
@@ -614,7 +640,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     font-size: 15px;
+
     margin: {
         right: 20em;
     }
@@ -653,7 +681,26 @@ body {
         top: 1.3em;
         right: 4em;
     }
+
     font-size: 15px;
+    width: max-content;
+}
+
+.filter-items-component {
+    padding: {
+        right: 2%;
+        left: 2%;
+    }
+}
+
+.checkbox-comment-visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    // border: gray dotted 1px;
+    // border-radius: 25px;
+    // height: 80px;
 }
 
 .filter-by {
@@ -683,6 +730,7 @@ body {
         top: 0.3em;
         right: 0.1em;
     }
+
     font-size: 15px;
 }
 
@@ -698,11 +746,8 @@ body {
 .seperate-line {
     background-color: #c5c5c5ce;
     height: 0.1em;
-    width: 95%;
+    width: 100%;
 
-    margin: {
-        right: 2.5%;
-    }
 }
 
 .seperate-filter-buttons {
@@ -1488,7 +1533,6 @@ $imgsDelay: 0.1s;
 // ------------------------------------My Items Buisness--------------------------------------------
 .MyItems {
     width: 100%;
-
     margin-top: $mt;
     font-size: 0.8em;
 }
@@ -1499,15 +1543,19 @@ $imgsDelay: 0.1s;
 // ------------------------------------Notification Buisness--------------------------------------------
 
 
-.dropdown-notification-navbar , .dropdown-notification-navbar:focus , .dropdown-notification-navbar:hover{
+.dropdown-notification-navbar,
+.dropdown-notification-navbar:focus,
+.dropdown-notification-navbar:hover {
     background-color: transparent;
     //  padding: 0px;
     border-color: transparent;
     outline: 'none';
-    border:none;
-    &:focus, &:checked{
+    border: none;
+
+    &:focus,
+    &:checked {
         color: $second-color;
-        border:none;
+        border: none;
     }
 }
 
@@ -1531,6 +1579,7 @@ $imgsDelay: 0.1s;
 .not-text {
     margin-bottom: 4px;
     height: max-content;
+    font-weight: normal;
 }
 
 .not-date {
@@ -1577,9 +1626,17 @@ $imgsDelay: 0.1s;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+.number-feed{
+    font-size: 0.8em;
+    text-align: right;
+    padding-right: 40px;
+    color:$noti-text-border-color;
+    font-weight: 500;
+}
 
 .notification-list {
-    height: 300px;
+    height: 200px;
+    width: max-content;
     font-size: 17px;
     overflow-y: scroll;
     list-style: none;
@@ -1624,20 +1681,23 @@ $imgsDelay: 0.1s;
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    font-size: 0.7em;
+    width: max-content;
     margin: {
-        top: 8em;
-        left: -9em;
+        // top: 8em;
+        top: 2em;
+        left: 1em;
+        right: 1em;
     }
 }
 
 .no-notification-icon {
-    font-size: 7em;
+    font-size: 4em;
     color: $first-color;
 }
 
 .no-notification-line1 {
-    font-weight: bolder;
+    // font-weight: bolder;
     color: black;
     font-size: 1.3em;
 }
@@ -1790,6 +1850,14 @@ $num: 70%;
     height: 22em;
 }
 
+.itemInf.starsTop10 {
+    position: relative;
+    margin-right: 10px;
+    margin-left: -155px;
+
+    width: 160px;
+}
+
 .item-header-details {
     border-bottom: solid $first-color 0.15em;
     border-bottom-left-radius: 1em;
@@ -1808,6 +1876,8 @@ $num: 70%;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bolder;
     font-size: 1.5em;
+    width: auto;
+    white-space: nowrap;
 }
 
 .item-header-price {
@@ -1931,10 +2001,12 @@ $num: 70%;
 
     color: #fff;
 }
-.iconProd{
+
+.iconProd {
     font-size: 18px;
     color: white;
 }
+
 // seperator
 .seperator-between-item-container {
     height: 2.5em;
@@ -2179,7 +2251,7 @@ $num: 70%;
     margin: {
         top: 1em;
     }
-    
+
 }
 
 .similar-meal {
@@ -2884,3 +2956,20 @@ $step-wizard-sign-up-color: #79a871;
 }
 
 // ------------------------------------End Scroll Bar Design--------------------------------------------
+///////// meery////
+.item-header-details .starItem {
+    margin-left: 205px;
+    
+}
+.item-header-details.wrapper label:before {
+    margin:  1px;
+    content: "\f005";
+    font-family: FontAwesome;
+    display: inline-block;
+    font-size: 1.2em;
+    // color: $starColor-unvoted;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    text-shadow: 0px 2px 4px RGBA(0,0,0,0.1);
+  }

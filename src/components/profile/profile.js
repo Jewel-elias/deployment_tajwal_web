@@ -7,11 +7,13 @@ import EditProfile from './EditProfileUser/EditProfileUser';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useBetween } from 'use-between';
+import { useEffect } from 'react';
 
 function Profile(props) {
     const state = useSelector((state) => state.data);
-    const userInfo = state.currentUser[0];
-    const { tempUser, setTempUser } = useBetween(state.useShareState);
+    const { tempUser, setTempUser,profileData,setProfileData } = useBetween(state.useShareState);
+    const userInfo = profileData;
+   
     const dispatch = useDispatch();
 
     // *** Edit Profile Modal Client
@@ -23,12 +25,12 @@ function Profile(props) {
         dispatch({ type: 'edit-profile-client', state: tempUser });
         handleCloseEditProfile()
     }
-    
-  
+   
+
     document.body.style.background = 'none';
-    
+
     return (
-        <div>
+        <div className="profile">
             <div className='infoUser'>
                 <div className='Point'>
                     <div>. . . . . . . . . .</div>
@@ -40,16 +42,16 @@ function Profile(props) {
                 <div className='photoAndNameProfile'>
                     {/* <div className='circleProf'></div> */}
                     {/* <img src={state.currentUser[0].userPhoto} className=' userPhoto' ></img> */}
-                    <img src={state.currentUser[0].userPhoto} id='user-picture' className="rounded-circle bu-image userPhoto" alt="..." />
-                        <div className="rounded-circle green-b "></div>
-                    <div className=' userName' >{state.currentUser[0].userName}</div>
+                    <img src={userInfo.image.url} id='user-picture' className="rounded-circle bu-image userPhoto" alt="..." />
+                    <div className="rounded-circle green-b "></div>
+                    <div className=' userName' >{userInfo.name}</div>
                 </div>
                 <div className='anotherInfo'>
                     <div className='infoP Loc'>
 
                         <div className='infoP Name'>
                             <bdi>
-                                الاسم:    {userInfo.userName}
+                                الاسم:    {userInfo.name}
                             </bdi> </div>
                         <div className='infoP email'>
                             <bdi>
@@ -60,15 +62,16 @@ function Profile(props) {
                 <div className='changeInfo' onClick={handleShowEditProfile}>
                     تعديل البيانات
                 </div>
-                <div className='likePages'>
-                    <div className='likeP'><bdi> <i class='fas fa-store-alt'></i>متاجر تتابعها: <span className='Num'>{userInfo.followPages.length}</span></bdi></div>
-                    <div className='ListLikeP'  >
-                        <LikePages />
-                    </div>
+            </div>
+            <div className='likePages'>
+                <div className='likeP'><bdi> <i class='fas fa-store-alt'></i>متاجر تتابعها: <span className='Num'>{userInfo.followedBusiness.length}</span></bdi></div>
+                <div className='ListLikeP'  >
+                    <LikePages />
                 </div>
+
                 <div className='likeProducts'>
 
-                    <div className='likePr'><bdi> <i className="fa fa-thumbs-up" aria-hidden="true"></i> منتجات اعجبت بها: <span className='Num'>{userInfo.likedProducts.length} </span></bdi></div>
+                    <div className='likePr'><bdi> <i className="fa fa-thumbs-up" aria-hidden="true"></i> منتجات قيمتها: <span className='Num'>{userInfo.ratedProducts.length} </span></bdi></div>
                     <LikeProducts />
                 </div>
             </div>
@@ -90,6 +93,7 @@ function Profile(props) {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
         </div>
     )
 }

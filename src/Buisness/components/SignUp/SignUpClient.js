@@ -6,13 +6,19 @@ import '../../style/App.css';
 import Button from 'react-bootstrap/Button';
 import imagePlaceholder from '../../images/imagePlaceholder.png';
 import { useBetween } from 'use-between';
-import Axios from 'axios';
+import Axios from 'axios'
 
 function SignUpClient() {
     // dispatch for save edits
     const dispatch = useDispatch();
     const [signUpStepNumberClient, setSignUpStepNumberClient] = useState("signup-client-1");
     const st = useSelector((state) => state.dataB);
+
+    // Access Token
+    const { accessToken, setAccessToken } = useBetween(st.useSharingFilters);
+
+    // User Type
+    const { userType, setUserType } = useBetween(st.useSharingFilters);
 
     //** New Account Data
     const [clientType, setClientType] = useState("مطعم");// ما طبيعة المتجر الذي تملكه ؟
@@ -38,7 +44,7 @@ function SignUpClient() {
         document.getElementById(id).classList.remove('is-invalid');
     }
 
-    const checkCurrentStepList = (event, currentStep) => {
+    const checkCurrentStepList = async (event, currentStep) => {
 
         var tmp = true;
         if (currentStep === "signup-client-1") {
@@ -46,13 +52,9 @@ function SignUpClient() {
                 tmp = false;
                 document.getElementById("email-client").classList.add('is-invalid');
             }
-            if (document.getElementById("password-client").value === "") {
+            if (document.getElementById("name-client").value === "") {
                 tmp = false;
-                document.getElementById('password-client').classList.add('is-invalid');
-            }
-            if (document.getElementById("confirm-password-client").value === "") {
-                tmp = false;
-                document.getElementById('confirm-password-client').classList.add('is-invalid');
+                document.getElementById('name-client').classList.add('is-invalid');
             }
 
             if (tmp) {
@@ -67,36 +69,59 @@ function SignUpClient() {
             }
         }
         else if (currentStep === "signup-client-2") {
-            if (document.getElementById("name-client").value === "") {
+
+            if (document.getElementById("password-client").value === "") {
                 tmp = false;
-                document.getElementById('name-client').classList.add('is-invalid');
+                document.getElementById('password-client').classList.add('is-invalid');
             }
-            if (document.getElementById("img-log-in").src === imagePlaceholder) {
+            if (document.getElementById("confirm-password-client").value === "") {
                 tmp = false;
-                document.getElementById('img-input-log-in').style.visibility = "visible";
+                document.getElementById('confirm-password-client').classList.add('is-invalid');
             }
+            // if (document.getElementById("img-log-in").src === imagePlaceholder) {
+            //     tmp = false;
+            //     document.getElementById('img-input-log-in').style.visibility = "visible";
+            // }
 
             if (tmp) {
-                alert("new account created");
 
-                // connect with api || sign up new client account
-                Axios.post('https://jsonplaceholder.typicode.com/posts',
-                    {
-                        // if the name is different in the api => clientType: type,...
-                        clientType, clientName, clientDescription, clientPlaceManually,
-                        clientLocation, clientImage, clientWorkTime, clientPhoneNumber,
-                        clientEmail, clientPassword, clientConfirmPassword
-                    }).then(res => console.log('Posting data', res))
+                // connect with api || sign up new user Account
+                const data = {
+                    'email': clientEmail,
+                    'name': clientName,
+                    'password': clientPassword,
+                    'passwordConfirmation': clientConfirmPassword,
+                };
+
+                const sessionData = {
+                    'email': clientEmail,
+                    'password': clientPassword
+                }
+                const headers = {
+                    // 'Authorization': 'Bearer my-token',
+                    "content-type": "application/json;charset=UTF-8"
+                };
+                await Axios.post("https://tajwal2.herokuapp.com/api/users", data, { headers })
+                    .then(res => {
+                        console.log(res.data)
+                        Axios.post("https://tajwal2.herokuapp.com/api/sessions", sessionData, { headers })
+                            .then(resSession => {
+                                setAccessToken(resSession.data.accessToken)
+                                setUserType(resSession.data.userType)
+                                // console.log(resSession.data.userType)
+                            })
+                            .catch(err => console.log("session error: " + err))
+                    })
                     .catch(err => console.log(err));
 
-                dispatch({
-                    type: 'new-client-account',
-                    state: {
-                        clientType, clientName, clientDescription, clientPlaceManually,
-                        clientLocation, clientImage, clientWorkTime, clientPhoneNumber,
-                        clientEmail, clientPassword, clientConfirmPassword
-                    }
-                });
+                // dispatch({
+                //     type: 'new-client-account',
+                //     state: {
+                //         clientType, clientName, clientDescription, clientPlaceManually,
+                //         clientLocation, clientImage, clientWorkTime, clientPhoneNumber,
+                //         clientEmail, clientPassword, clientConfirmPassword
+                //     }
+                // });
             }
 
         }
@@ -173,39 +198,6 @@ function SignUpClient() {
 
             {/* First Step Log in */}
             <ul className="list-group list-group-flush list-edit-item-step-1 list-sign-up current-list-log-in" id="step-1-log-in">
-                <li className="input-field-add-item required-input input-field-signup">
-                    <label htmlFor="email-client" className='label-edit-modal'>بريدك الالكتروني:</label>
-                    <input type="email" id="email-client" className='form-control input-signup'
-                        onChange={(event) => changeField(event, "client-email")}
-                        onClick={(event) => clickField(event, 'email-client')}
-                        placeholder='freshMap@hotmail.com' required />
-
-                    <div className="invalid-feedback">يرجى إدخال بريدك الالكتروني</div>
-                </li>
-                <li className="input-field-add-item required-input input-field-signup">
-                    <label htmlFor="password-client" className='label-edit-modal'>كلمة السّر:</label>
-                    <input type="password" id="password-client" className='form-control input-signup'
-                        onChange={(event) => changeField(event, "client-password")}
-                        onClick={(event) => clickField(event, 'password-client')}
-                        placeholder='********' required />
-
-                    <div className="invalid-feedback">يرجى إدخال كلمة السّر</div>
-                </li>
-                <li className="input-field-add-item required-input input-field-signup">
-                    <label htmlFor="confirm-password-client" className='label-edit-modal'>تأكيد كلمة السّر:</label>
-                    <input type="confirm-password" id="confirm-password-client" className='form-control input-signup'
-                        onChange={(event) => changeField(event, "client-confirm-password")}
-                        onClick={(event) => clickField(event, 'confirm-password-client')}
-                        placeholder='********' required />
-
-                    <div className="invalid-feedback">يرجى تأكيد كلمة السّر</div>
-                </li>
-
-            </ul>
-
-
-            {/* Second Step Log in */}
-            <ul className="list-group list-group-flush list-edit-item-step-1 list-sign-up" id="step-2-log-in">
                 <li className="input-field-add-item required-input input-field-signup ">
                     <label htmlFor="name-client" className='label-edit-modal'>اسم المستخدم:</label>
                     <input type="text" id="name-client" className='form-control input-signup'
@@ -215,7 +207,24 @@ function SignUpClient() {
 
                     <div className="invalid-feedback">يرجى إدخال اسم للمتجر</div>
                 </li>
-                <li className="input-field-add-item input-field-signup" style={{ marginTop: '20px' }}>
+                <li className="input-field-add-item required-input input-field-signup">
+                    <label htmlFor="email-client" className='label-edit-modal'>بريدك الالكتروني:</label>
+                    <input type="email" id="email-client" className='form-control input-signup'
+                        onChange={(event) => changeField(event, "client-email")}
+                        onClick={(event) => clickField(event, 'email-client')}
+                        placeholder='freshMap@hotmail.com' required />
+
+                    <div className="invalid-feedback">يرجى إدخال بريدك الالكتروني</div>
+                </li>
+
+
+            </ul>
+
+
+            {/* Second Step Log in */}
+            <ul className="list-group list-group-flush list-edit-item-step-1 list-sign-up" id="step-2-log-in">
+
+                {/*<li className="input-field-add-item input-field-signup" style={{ marginTop: '20px' }}>
                     <label htmlFor="signup-upload-img-client" className='label-edit-modal required-input-after-span'>
                         <span>صورة البروفايل:</span>
                         <img src={clientImage} alt='...' className='pro-image-signup' id="img-log-in" />
@@ -231,6 +240,24 @@ function SignUpClient() {
                         onChange={handleImageChange}
                         style={{ display: 'none' }}
                     />
+                </li>*/}
+                <li className="input-field-add-item required-input input-field-signup">
+                    <label htmlFor="password-client" className='label-edit-modal'>كلمة السّر:</label>
+                    <input type="password" id="password-client" className='form-control input-signup'
+                        onChange={(event) => changeField(event, "client-password")}
+                        onClick={(event) => clickField(event, 'password-client')}
+                        placeholder='********' required />
+
+                    <div className="invalid-feedback">يرجى إدخال كلمة السّر</div>
+                </li>
+                <li className="input-field-add-item required-input input-field-signup">
+                    <label htmlFor="confirm-password-client" className='label-edit-modal'>تأكيد كلمة السّر:</label>
+                    <input type="password" id="confirm-password-client" className='form-control input-signup'
+                        onChange={(event) => changeField(event, "client-confirm-password")}
+                        onClick={(event) => clickField(event, 'confirm-password-client')}
+                        placeholder='********' required />
+
+                    <div className="invalid-feedback">يرجى تأكيد كلمة السّر</div>
                 </li>
             </ul>
 

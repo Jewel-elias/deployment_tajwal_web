@@ -127,9 +127,8 @@
 }
 
 .LikeP {
+  position: relative;
   direction: rtl;
-  display: flex;
-  margin-right: -9%;
   margin-top: -2%;
 }
 

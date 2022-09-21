@@ -27,7 +27,7 @@ function Map() {
   const state = useSelector((state) => state.data);
   const [dropdownOpen, setdropdownOpen] = useState(false);
   const [goToInfo, setGoToInfo] = useState(false);
-  const { value, setInputValue } = useBetween(state.useShareState);
+  const { value, setInputValue, resStor, setStore } = useBetween(state.useShareState);
   const { isUserLogin, setisUserLogin } = useBetween(state.useShareState);
   const { dropdownOpenLogin, setdropdownOpenLogin } = useBetween(state.useShareState);
   const { idStore, setidStore } = useBetween(state.useShareState);
@@ -39,21 +39,25 @@ function Map() {
 
   // console.log(state);
 
-  const dropdownitem = products.length ? (
-    products.map(item => {
+  // const dropdownitem = products.length ? (
+  //   products.map(item => {
 
-      return (
-        <div key={item.id}>
+  //     return (
+  //       <div key={item.id}>
 
-          <DropdownItem className='menu-item' onClick={() => goToTodoItem(item.list, item.type)} >
-            <i className={item.icon}></i><span className='prodType'> {item.type} </span>
-          </DropdownItem>
+  //         <DropdownItem className='menu-item' onClick={() => goToTodoItem(item.list, item.type)} >
+  //           <i className={item.icon}></i><span className='prodType'> {item.type} </span>
+  //         </DropdownItem>
 
-        </div>
-      )
-    })
-  ) : (<p className='NoProd'> </p>);
+  //       </div>
+  //     )
+  //   })
+  // ) : (<p className='NoProd'> </p>);
+  useEffect(() => {
 
+    setStore(resStor);
+
+  }, [resStor.length])
   function toggle() {
 
     if (activeFiltra)
@@ -78,7 +82,7 @@ function Map() {
   if (theNumProd == 0) {
     arrow = false;
   }
-  
+
 
   // *** (Rate Modal)
   const [showRate, setShowRate] = useState(false);
@@ -150,12 +154,14 @@ function Map() {
     //     )
   }
   var cnt = 0;
-  for (const feature of state.stores.features) {
-    if (idStore == feature.properties.id)
-      idS.current = cnt;
-    cnt++;
+  var stores = resStor;
+  if (stores.length > 0) {
+    for (const feature of stores) {
+      if (idStore == feature._id)
+        idS.current = cnt;
+      cnt++;
+    }
   }
-
   return (
 
     <><div >
@@ -163,7 +169,7 @@ function Map() {
       {/* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link> */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
-      
+
       {/* <div class='goToInfo'>
         <InfoOfLoc />
       </div> */}
@@ -201,7 +207,7 @@ function Map() {
 
 
 
-        {/* <Dropdown isOpen={dropdownOpen} toggle={toggle}   >
+      {/* <Dropdown isOpen={dropdownOpen} toggle={toggle}   >
           <DropdownToggle caret className='dropDown'>
 
             <span className='theProd' > {theNameProd} <span style={{ color: theNumProd == 0 ? 'rgb(228, 9, 9)' : 'rgb(26, 25, 25)', visibility: theNumProd >= 0 ? 'visible' : 'hidden' }}>( {theNumProd} )</span></span>
@@ -213,41 +219,41 @@ function Map() {
 
             {dropdownitem}; */}
 
-        {/* <DropdownItem disabled>{state.products[1]}</DropdownItem> */}
-        {/* <DropdownItem divider />
+      {/* <DropdownItem disabled>{state.products[1]}</DropdownItem> */}
+      {/* <DropdownItem divider />
             <DropdownItem>Another Action</DropdownItem> */}
-        {/* </DropdownMenu>
+      {/* </DropdownMenu>
         </Dropdown> */}
 
-        {/* <div className='Filter-item shorPath'><bdi><i className="fas fa-walking"></i>اقصر طريق</bdi></div> */}
-        {/* <div className='Filter-item rate' onClick={() => hidAndShow("div.Fltera.Rate")}> */}
-        {/* <div className='Filter-item rate' onClick={handleShowRate}>
+      {/* <div className='Filter-item shorPath'><bdi><i className="fas fa-walking"></i>اقصر طريق</bdi></div> */}
+      {/* <div className='Filter-item rate' onClick={() => hidAndShow("div.Fltera.Rate")}> */}
+      {/* <div className='Filter-item rate' onClick={handleShowRate}>
           <bdi><i className="fil fa fa-bar-chart" aria-hidden="true" ></i>احصائيات</bdi>
         </div> */}
-        {/* <div className='Filter-item chat' >
+      {/* <div className='Filter-item chat' >
           <bdi><i className="fil fas fa-comment-alt"></i>مراسلة</bdi></div> */}
 
 
-        {/* <div className='Filter-item shkoa' >
+      {/* <div className='Filter-item shkoa' >
 
           <bdi><i className="fil fas fa-frown"></i>شكوى</bdi>
         </div> */}image.png
 
-        {/* <div className='resAndclo'>
+      {/* <div className='resAndclo'>
           <i className="fil1 fa fa-cutlery" aria-hidden="true"></i> <i className="fil1 fas fa-tshirt"></i> <br />
           <span class="res" ><bdi>مطاعم</bdi></span>  <span className="clo"><bdi>ألبسة</bdi></span>
         </div> */}
-        {/* <div className='Filter-item '>
+      {/* <div className='Filter-item '>
           <bdi className='linkApp'>رابط التطبيق:</bdi>
         </div> */}
       {/* </div>*/}
-    </div> 
+    </div>
 
-    
+
       <div className='Fltera Rate ' >
-     
+
       </div>
-    
+
       <NotiAlert></NotiAlert>
       {/* show Feedback */}
       <Modal show={showFeedback} onHide={handleCloseFeedback} size='lg'>
@@ -293,7 +299,7 @@ function Map() {
 
       {/* show Rate */}
       <Modal show={showRate} onHide={handleCloseRate} size='lg'>
-        
+
         <Modal.Body><Rate1 /></Modal.Body>
         <Modal.Footer dir="auto">
           <Button variant="primary" className="btn btn-calendar-modal-save"

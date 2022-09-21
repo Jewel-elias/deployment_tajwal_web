@@ -1,133 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
-import Arrow from 'react-arrows'
 import ShowMore from 'react-show-more-button';
 import './likePages.scss'
 import { useSelector } from 'react-redux';
-import '../sugg/sugg.scss'
 import sadSmail from '../photo/frowning_face.gif'
 import WOW from 'wowjs';
+import { useBetween } from 'use-between';
 //  const getItems = () =>
 //     Array(20)
 //         .fill(0)
 //         .map((_, ind) => ({ id: `element-${ind}` }));
 function LikePages(props) {
-    useEffect(() => {
-        new WOW.WOW({
-            live: false
-        }).init();
-    }, [])
-    //     const state = useSelector((state) => state.data);
-    //     const [items, setItems] = useState(state.currentUser[0].followPages);
-
-    //     const [idItem, setid] = useState(0);
-    //     const [selected, setSelected] = useState([]);
-    //     const [position, setPosition] = useState(0);
-
-    //     const isItemSelected = (id) => !!selected.find((el) => el === id);
-
-    //     const handleClick =
-    //         (id) =>
-    //             ({ getItemById, scrollToItem }) => {
-    //                 const itemSelected = isItemSelected(id);
-
-    //                 setSelected((currentSelected) =>
-    //                     itemSelected
-    //                         ? currentSelected.filter((el) => el !== id)
-    //                         : currentSelected.concat(id)
-    //                 );
-    //             };
-    // const listlikePages=items.length?(
-    // items.map((item) => {
-    //     return(
-    //     <LikePage
-    //         itemId={item.id} // NOTE: itemId is required for track items
-    //         imgPage={item.photo}
-    //         name={item.name}
-    //         loc={item.Loc}
-    //         key={item.id}
-
-    //     />
-    // )})
-    // ):(
-    //     <p><bdi>لا توجد صفحات تابعتها حتى الآن!!<img src={sadSmail} className='sadSmail'></img></bdi></p>
-
-    //     )
-
-    //     return (
-    //         <div >
-    //             <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow} rtl='true' scrollContainerClassName='ScrollLikeP'
-    //             transitionDuration={1500}>
-    //                {listlikePages}
-    //             </ScrollMenu>
-    //         </div>
-    //     );
-
-
-    //     function LeftArrow() {
-
-    //         const { isFirstItemVisible, scrollPrev } =
-    //             React.useContext(VisibilityContext);
-    //         if (idItem > 3)
-    //             return (
-    //                 <div disabled={isFirstItemVisible} onClick={() => scrollPrev()} className='arrow'>
-
-
-    //                     <i class="fa fa-angle-left left-arrow-like-pages" ></i>
-    //                 </div>
-    //             );
-    //         else
-    //             return (
-    //                 <div></div>
-    //             )
-    //     }
-
-    //     function RightArrow() {
-    //         const { isLastItemVisible, scrollNext } = React.useContext(VisibilityContext);
-
-    //         if (idItem > 3)
-    //             return (
-    //                 <div disabled={isLastItemVisible} onClick={() => scrollNext()} className='arrow'>
-
-    //                     <i class="fa fa-angle-right right-arrow-like-pages"></i>
-
-    //                 </div>
-    //             );
-    //         else
-    //             return (
-    //                 <div></div>
-    //             )
-    //     }
-
-    //     function LikePage({ imgPage, name, loc, itemId }) {
-
-    //         setid(itemId);
-    //         return (
-    //             <div className='likeP'
-
-    //                 style={{
-    //                     width: '300px',
-
-
-    //                 }}
-    //                 tabIndex={0}
-    //             >
-    //                 <div className="card">
-    //                     <img src={imgPage} className='imgPage'></img>
-    //                     <div className='nameAndLoc namePage'>{name}</div>
-    //                     <div className='nameAndLoc locPage'>{loc}</div>
-    //                     {/* <div>visible: {JSON.stringify(!!visibility.isItemVisible(itemId))}</div>
-    //                 <div>selected: {JSON.stringify(!!selected)}</div> */}
-    //                 </div>
-    //                 {/* <div
-    //                     style={{
-    //                         height: '200px',
-    //                     }}
-    //                 /> */}
-    //             </div>
-    //         );
-    //     }
-    // }
+  
+   
 
     setTimeout(() => {
         var skeletonTodoLoad = document.getElementsByClassName('skeleton-sugg-load-profile');
@@ -143,7 +28,8 @@ function LikePages(props) {
     }, 5000)
 
     const state = useSelector((state) => state.data);
-    const [items, setItems] = useState(state.currentUser[0].followPages);
+    const { profileData,setProfileData} = useBetween(state.useShareState);
+    var items=profileData;
     const [btnName, setbtnName] = useState('عرض المزيد');
     const cnt = () => {
         if (btnName == 'عرض المزيد')
@@ -151,7 +37,7 @@ function LikePages(props) {
         else
             setbtnName('عرض المزيد')
     }
-
+ 
     const tempSkeletonLikePagesKeys = ['skeletonLikePages1', 'skeletonLikePages2', 'skeletonLikePages3', 'skeletonLikePages4',
         'skeletonLikePages5', 'skeletonLikePages6', 'skeletonLikePages7', 'skeletonLikePages8'];
 
@@ -168,22 +54,28 @@ function LikePages(props) {
         )
     });
 
-    const LikePages =
-        items.map(item => {
-
+    const LikePages =items.followedBusiness.length ? (
+       
+        items.followedBusiness.map(item => {
+           
             return (
-                <div className="SuggPages pages-sugg-load-profile" key={item.id}>
-                    <div className="ratePages">{item.rate} <i className='fa fa-star '></i></div>
-                    <img src={item.photo} className='imgPage'></img>
+                <div className="SuggPages pages-sugg-load-profile" key={item._id}>
+                    <div className="ratePages">{item.rateValue.toFixed(1)} <i className='fa fa-star '></i></div>
+                    <img src={item.image.url} className='imgPage'></img>
                     <div className="info">
                         <div className='namePages'>{item.name}</div>
-                        <div className='typePages'> <i className={`${item.type == 'مطعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i>{item.type}</div>
-                        <div className='typePages'> <i className="fa fa-map-marker" aria-hidden="true"></i> {item.Loc} </div>
+                        {/* <div className='typePages'> <i className={`${item.businessTypeName.name == 'مطاعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i>{item.businessTypeName.name}</div> */}
+                        <div className='typePages'> <i className={`${item.businessTypeName.name == 'مطاعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i>{item.businessTypeName.name}</div>
+                        <div className='typePages'> <i className="fa fa-map-marker" aria-hidden="true"></i> {item.location.address} </div>
                     </div>
                 </div>
             )
 
-        })
+        })): (
+
+          <p></p>
+    
+        )
     const styleBtn = {
 
         background: '#47A851',
@@ -195,7 +87,7 @@ function LikePages(props) {
     }
     return (
         <div className='LikeP'>
-            <div className='ContSugg '>
+            <div className='ContSugg'  style={{display:items.followedBusiness.length>0?'block':'none'}}>
                 <ShowMore maxHeight={450}
 
                     className='ListLikeProd'
@@ -203,12 +95,13 @@ function LikePages(props) {
                     button={
                         <button style={styleBtn} className="btnSeeMore">{btnName}</button>}
                 >
-                    <div className="ContSuggPages col-lg-8">
+                    <div className="ContSuggPages col-lg-12">
                         {skeletonPages}
                         {LikePages}
                     </div>
                 </ShowMore>
             </div>
+            <p style={{display:items.followedBusiness.length==0?'block':'none'}}><bdi> لا توجد متاجر تتابعها حتى الآن!!<img src={sadSmail} className='sadSmail'></img></bdi></p>
         </div>
     )
 }

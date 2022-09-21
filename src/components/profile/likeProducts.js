@@ -4,9 +4,11 @@ import './likeProducts.scss'
 import ShowMore from 'react-show-more-button';
 import sadSmail from '../photo/frowning_face.gif'
 import WOW from 'wowjs';
+import { useBetween } from 'use-between';
 function LikeProducts(props) {
     const state = useSelector((state) => state.data);
-    const [items, setItems] = useState(state.currentUser[0].likedProducts);
+    const { profileData, setProfileData } = useBetween(state.useShareState);
+    var items = profileData;
     const [btnName, setbtnName] = useState('عرض المزيد');
     const cnt = () => {
         if (btnName == 'عرض المزيد')
@@ -14,11 +16,7 @@ function LikeProducts(props) {
         else
             setbtnName('عرض المزيد')
     }
-    useEffect(() => {
-        new WOW.WOW({
-            live: false
-        }).init();
-    }, [])
+
 
     setTimeout(() => {
         var skeletonTodoLoad = document.getElementsByClassName('skeleton-sugg-prod-load-profile');
@@ -49,19 +47,23 @@ function LikeProducts(props) {
         )
     });
 
-    const ListItems = items.length ? (
-        items.map(item => {
-
+    const ListItems = items.ratedProducts.length ? (
+        items.ratedProducts.map(item => {
+            var type = 'مطاعم';
+            var categories='';
+            if (item.sizes.length == 0) type = 'ألبسة';
+           
+            if(item.categories[0]!=undefined) categories=item.categories[0].categoryName;
             return (
-                <div className="SuggProducts prod-sugg-load-profile" key={item.id}>
-
-                    <img src={item.photo} className='imgProd'></img>
+                <div className="SuggProducts prod-sugg-load-profile" key={item._id}>
+                    <div className="ratePages">{item.rateValue.toFixed(1)} <i className='fa fa-star '></i></div>
+                    <img src={item.images[0].url} className='imgProd'></img>
                     <div className="info">
                         <div className='nameProd'>{item.name}</div>
                         <div className='storeProd'>
                             {/* <i className={`${item.type == 'مطعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i> */}
-                            {item.store}</div>
-                        <div className='typeProd'> {item.type} </div>
+                          {type} </div>
+                        <div className='typeProd'> {categories} </div>
                     </div>
                 </div>
 
@@ -70,8 +72,7 @@ function LikeProducts(props) {
         })
     ) : (
 
-        <p><bdi> لا توجد منتجات اعجبتك حتى الآن!!<img src={sadSmail} className='sadSmail'></img></bdi></p>
-
+        <p></p>
     )
     const styleBtn = {
 
@@ -92,18 +93,25 @@ function LikeProducts(props) {
     }
     return (
         <div className='LikeProd'>
-            <ShowMore maxHeight={450}
+            <div style={{ display: items.ratedProducts.length > 0 ? 'block' : 'none' }}>
+                <ShowMore maxHeight={450}
 
-                className='ListLikeProd'
-                onChange={() => cnt()}
-                button={
-                    <button style={styleBtn} className="btnSeeMore">{btnName}</button>}
-            >
-                <div className='ContSuggProd col-lg-7'>
-                    {skeletonProd}
-                    {ListItems}
-                </div>
-            </ShowMore>
+                    className='ListLikeProd'
+                    onChange={() => cnt()}
+                    button={
+                        <button style={styleBtn} className="btnSeeMore">{btnName}</button>}
+                >
+                    <div className='ContSuggProd col-lg-12'>
+                        {skeletonProd}
+                        {ListItems}
+                    </div>
+                </ShowMore>
+
+            </div>
+
+            <p style={{ display: items.ratedProducts.length == 0 ? 'block' : 'none' }}> لا توجد منتجات قيمتها حتى الآن!!<img src={sadSmail} className='sadSmail'></img></p>
+
+
         </div>
     )
 }

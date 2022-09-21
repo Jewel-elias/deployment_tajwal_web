@@ -9,9 +9,17 @@ import WorkHours from './WorkHours';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useBetween } from 'use-between';
+import MapBoxSignUp from '../../components/googleMaps/googleMaps';
+import Axios from 'axios';
+import FormData from 'form-data'
 
 
 function EditProfile() {
+    // for MapBoxSignUp
+    const [optionStore, setOptionStore] = useState('مطاعم');
+    const handleOptionChange = (e) => {
+        setOptionStore(e.target.value)
+    }
 
     // REFERENCE for input an image
     const inputRef = useRef();
@@ -20,12 +28,18 @@ function EditProfile() {
     const dispatch = useDispatch();
 
     const st = useSelector((state) => state.dataB);
-    const {buisnessProfile, setBuisnessProfile} = useBetween(st.useSharingFilters);
+
+    // Access Token
+    const { accessToken, setAccessToken } = useBetween(st.useSharingFilters);
+
+    const { buisnessProfile, setBuisnessProfile } = useBetween(st.useSharingFilters);
+
+    const { flagEditProfileBusi, setFlagEditProfileBusi } = useBetween(st.useSharingFilters);
 
     const schedules = st.workSchedule;
 
     // set TODAY WORK
-    const [todayWork, setTodayWork] = useState('');
+    const { todayWork, setTodayWork } = useBetween(st.useSharingFilters);
     const [todayWorkTime, setTodayWorkTime] = useState(buisnessProfile.openOrclose);
 
     // MODAL SHOW FUNCTIONS
@@ -34,14 +48,28 @@ function EditProfile() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    // *** (Map Modal)
+    const [showLocationOnMap, setShowLocationOnMap] = useState(false);
+
+    const handleCloseLocationOnMap = () => {
+        setShowLocationOnMap(false);
+    }
+    const handleShowLocationOnMap = () => {
+        setShowLocationOnMap(true);
+    }
+
     // state for editing information
-    const newState = {
+    var newState = {
+        WorkId: buisnessProfile.WorkId,
         WorkName: buisnessProfile.WorkName,
         WorkType: buisnessProfile.WorkType,
         openOrclose: todayWorkTime,
         workTime: buisnessProfile.workTime,
         workLocation: buisnessProfile.workLocation,
+        long: buisnessProfile.long,
+        lati: buisnessProfile.lati,
         workNumber: buisnessProfile.workNumber,
+        WorkTypeId: buisnessProfile.WorkTypeId,
         workMail: buisnessProfile.workMail,
         workPassword: buisnessProfile.workPassword,
         workConPassword: buisnessProfile.workConPassword,
@@ -51,56 +79,89 @@ function EditProfile() {
         nProducts: buisnessProfile.nProducts,
         nRaters: buisnessProfile.nRaters,
     }
+    // temp work schedule
+    const { workSchedule, setWorkSchedule } = useBetween(st.useSharingFilters);
+
+    // const schedules = st.workSchedule;
+    // const workScheduleDetails = workSchedule;
+    var scheduleForApi = [];
+    const weekDays = ['SUN', "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    var workScheduleDetails = workSchedule;
+    let length = workSchedule.length;
     //state for editing schedule
-    const newSchedule = schedules;
 
     const submitEditSchedule = () => {
-        dispatch({
-            type: 'edit-schedule',
-            state: newSchedule
-        });
+        setWorkSchedule(workScheduleDetails)
+        // dispatch({
+        //     type: 'edit-schedule',
+        //     state: workScheduleDetails
+        // });
     }
     useEffect(() => {
+        const workTime = buisnessProfile.workTime;
+        var dayName;
+        for (var i = 0; i < 7; i++) {
+            dayName = weekDays[i];
+            var flag = false;
+            for (var j = 0; j < workTime.length; j++) {
+                if (dayName === workTime[j].dayName) { // if shop is open in the day = dayName
+                    flag = true;
+                    workScheduleDetails[i].openOrclose = 'open';
+                    workScheduleDetails[i].opened = 'مفتوح';
+                    workScheduleDetails[i].timeMsFrom = workTime[j].openHour;
+                    workScheduleDetails[i].timeMsTo = workTime[j].closeHour;
 
-        // get work hours of today 
+                    // OPEN
+                    var hoursOpen = workTime[j].openHour / 3600000;
+                    var minuOpen = (workTime[j].openHour % 3600000) / 1000;
 
-        const d = new Date();
-        let day = d.getDay();
-        if (day === 6) day -= 6;
-        else day += 1;
+                    // Formatting as 00:00
+                    var hoursOpenString;
+                    var minuOpenString;
+                    if (hoursOpen >= 10) {
+                        hoursOpenString = String(hoursOpen);
+                    }
+                    else {
+                        hoursOpenString = '0' + String(hoursOpen);
+                    }
 
-        if (st.workSchedule[day].opened === 'مغلق') {
-            setTodayWork('مغلق اليوم');
-            setTodayWorkTime('مغلق الآن');
+                    if (minuOpen >= 10) {
+                        minuOpenString = String(minuOpen);
+                    }
+                    else {
+                        minuOpenString = '0' + String(minuOpen);
+                    }
+
+                    workScheduleDetails[i].timeFrom = (hoursOpenString) + ':' + (minuOpenString)
+
+                    // CLOSE
+                    var hoursClose = workTime[j].closeHour / 3600000;
+                    var minuClose = (workTime[j].closeHour % 3600000) / 1000;
+
+                    // Formatting as 00:00
+                    var hoursCloseString;
+                    var minuCloseString;
+                    if (hoursClose >= 10) {
+                        hoursCloseString = String(hoursClose);
+                    }
+                    else {
+                        hoursCloseString = '0' + String(hoursClose);
+                    }
+
+                    if (minuClose >= 10) {
+                        minuCloseString = String(minuClose);
+                    }
+                    else {
+                        minuCloseString = '0' + String(minuClose);
+                    }
+                    workScheduleDetails[i].timeTo = (hoursCloseString) + ':' + (minuCloseString)
+                    setWorkSchedule(workScheduleDetails)
+                    // console.log(workScheduleDetails[i].timeTo)
+                    break;
+                }
+            }
         }
-        else {
-            let timeFrom = st.workSchedule[day].timeFrom;
-            let timeTo = st.workSchedule[day].timeTo;
-            let hourFrom = st.workSchedule[day].timeFrom[0] + st.workSchedule[day].timeFrom[1];
-            let hourTo = st.workSchedule[day].timeTo[0] + st.workSchedule[day].timeTo[1];
-            let fromPeriod, toPeriod;
-            if (hourFrom > '00' && hourFrom < '11') {
-                fromPeriod = 'AM';
-            }
-            else {
-                hourFrom -= 12;
-                timeFrom = hourFrom + ':' + timeFrom[3] + timeFrom[4]
-                fromPeriod = 'PM'
-            }
-
-            if (hourTo > '00' && hourTo < '11') {
-                toPeriod = 'AM';
-            }
-            else {
-                hourTo -= 12;
-                timeTo = hourTo + ':' + timeTo[3] + timeTo[4]
-                toPeriod = 'PM'
-            }
-            setTodayWork(timeFrom + fromPeriod + ' - ' + timeTo + toPeriod);
-        }
-        console.log(todayWork);
-
-    });
+    }, [workSchedule]);
 
 
     const editSchedule = (event) => {
@@ -110,7 +171,7 @@ function EditProfile() {
             if (i === 7) {
                 submitEditSchedule();
             }
-            else if ((newSchedule[i].opened === 'مفتوح') && (i !== 7)) {
+            else if ((workScheduleDetails[i].opened === 'مفتوح') && (i !== 7)) {
                 // 19:00
                 // 09:00
                 const from = document.getElementById(schedules[i].timePickerFromId).value;
@@ -123,8 +184,8 @@ function EditProfile() {
                 if (fromHour > toHour || ((fromHour === toHour) && fromMinute > toMinute)) {
                     console.log('error')
                 }
-                newSchedule[i].timeFrom = from;
-                newSchedule[i].timeTo = to;
+                workScheduleDetails[i].timeFrom = from;
+                workScheduleDetails[i].timeTo = to;
             }
         }
         handleClose();
@@ -170,6 +231,25 @@ function EditProfile() {
             };
 
             reader.readAsDataURL(event.target.files[0]);
+
+            const formData = new FormData();
+            formData.append("image", event.target.files[0]);
+            formData.append("fileName", event.target.files[0].name);
+            formData.append("type", event.target.files[0].type);
+            console.log(Array.from(formData))
+            const headers = {
+                'Authorization': 'Bearer ' + accessToken,
+                "content-type": "application/json;"
+            };
+            Axios.post(
+                "https://tajwal2.herokuapp.com/api/business/image",
+                formData,
+                { headers }
+            ).then(res => {
+                console.log(res.data);
+                setFlagEditProfileBusi(!flagEditProfileBusi);
+            })
+                .catch(err => console.log(err))
         }
     }
 
@@ -190,6 +270,59 @@ function EditProfile() {
         //     .then(res => {
         //         console.log(res);
         //     })
+    }
+
+    const updateInfoProfileBusiness = () => {
+        for (var i = 0; i < 7; i++) {
+            if (workSchedule[i].openOrclose === 'open') {
+                scheduleForApi.push({
+                    dayName: weekDays[i],
+                    openHour: workSchedule[i].timeMsFrom,
+                    closeHour: workSchedule[i].timeMsTo
+                })
+            }
+        }
+        // setBuisnessProfile(newState);
+        const data = {
+            // "_id": newState.WorkId,
+            // "email": newState.workMail,
+            "name": newState.WorkName,
+            "phoneNumber": newState.workNumber,
+            "description": newState.workDescription,
+            // "password": newState.workPassword,
+            "businessTypeId": newState.WorkTypeId,
+            "location": {
+                "address": newState.workLocation,
+                "longitude": newState.long,
+                "latitude": newState.lati
+            },
+            "workingHours": scheduleForApi
+        };
+        console.log(data)
+        // console.log("name: "+ newState.WorkName)
+        // console.log("phoneNumber: "+ newState.workNumber)
+        // console.log("description: "+ newState.workDescription)
+        // console.log("password: "+ newState.workPassword)
+        // console.log("businessTypeId: "+ newState.WorkTypeId)
+        // console.log("address: "+ newState.workLocation)
+        // console.log("longitude: "+ newState.long)
+        // console.log("latitude: "+ newState.lati)
+        // console.log("workingHours: "+ scheduleForApi)
+
+
+        Axios.patch("https://tajwal2.herokuapp.com/api/business", data, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                "Content-Type": "application/json;charset=UTF-8"
+            }
+        }
+        )
+            .then(res => {
+                console.log("patching to :::: ", res.data);
+            })
+            .catch((err) => { console.log(err) });
+
+        setFlagEditProfileBusi(!flagEditProfileBusi);
     }
 
     return (
@@ -224,14 +357,14 @@ function EditProfile() {
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.WorkName} dir="auto" onChange={handleChangeName} />
+                                            defaultValue={buisnessProfile.WorkName} dir="auto" onChange={handleChangeName} />
                                         <i className="bi bi-file-person icon-label-profile"></i>
                                     </span>
                                 </li>
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.WorkType} dir="auto" onChange={handleChangeType} />
+                                            defaultValue={buisnessProfile.WorkType} dir="auto" onChange={handleChangeType} />
                                         <i className="fa fa-cutlery icon-label-profile" aria-hidden="true"></i>
                                     </span>
                                 </li>
@@ -258,43 +391,47 @@ function EditProfile() {
                                 </li>
                                 <li className="list-group-item prof-list-edit">
                                     <span>
+                                        <Button variant="primary" onClick={handleShowLocationOnMap} className="calendar-icon">
+                                            <i className="bi bi-geo-alt icon-label-profile"></i>
+                                        </Button>
+
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workLocation} dir="auto" onChange={handleChangeLocation} />
+                                            defaultValue={buisnessProfile.workLocation} dir="auto" onChange={handleChangeLocation} />
                                         <i className="bi bi-geo-alt-fill icon-label-profile"></i>
                                     </span>
                                 </li>
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workNumber} dir="right" onChange={handleChangeNumber} />
+                                            defaultValue={buisnessProfile.workNumber} dir="right" onChange={handleChangeNumber} />
                                         <i className="bi bi-telephone-fill icon-label-profile"></i>
                                     </span>
                                 </li>
-                                <li className="list-group-item prof-list-edit">
+                                {/*<li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workMail} dir="auto" onChange={handleChangeMail} />
+                                            defaultValue={buisnessProfile.workMail} dir="auto" onChange={handleChangeMail} />
                                         <i className="fa fa-envelope icon-label-profile" aria-hidden="true"></i>
                                     </span>
-                                </li>
+                                </li>*/}
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="password" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workPassword} dir="auto" onChange={handleChangePassword} />
+                                            defaultValue={buisnessProfile.workPassword} dir="auto" onChange={handleChangePassword} />
                                         <i className="bi bi-key-fill icon-label-profile" aria-hidden="true"></i>
                                     </span>
                                 </li>
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="password" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workConPassword} dir="auto" onChange={handleChangeConPassword} />
+                                            defaultValue={buisnessProfile.workConPassword} dir="auto" onChange={handleChangeConPassword} />
                                         <i className="bi bi-key-fill icon-label-profile" aria-hidden="true"></i>
                                     </span>
                                 </li>
                                 <li className="list-group-item prof-list-edit">
                                     <span>
                                         <input type="text" className="form-control mx-2 buisness-label-profile-edit"
-                                            defaultValue={st.buisnessProfile.workDescription} dir="auto" onChange={handleChangeDescription} />
+                                            defaultValue={buisnessProfile.workDescription} dir="auto" onChange={handleChangeDescription} />
                                         <i className="fa fa-list-alt icon-label-profile" aria-hidden="true"></i>
                                     </span>
                                 </li>
@@ -322,8 +459,8 @@ function EditProfile() {
 
                 <NavLink to="/ProfileBuisness" exact="true" >
 
-                    <button type='button' className='btn btn-edit' style={{marginTop: '6em'}}
-                        onClick={() => setBuisnessProfile(newState) }>
+                    <button type='button' className='btn btn-edit' style={{ marginTop: '6em' }}
+                        onClick={updateInfoProfileBusiness}>
                         حفظ التعديلات
                     </button>
 
@@ -353,7 +490,28 @@ function EditProfile() {
                 </Modal.Footer>
             </Modal>
 
-
+{/* Location */}
+<Modal show={showLocationOnMap} onHide={handleCloseLocationOnMap} size='lg'>
+                <Modal.Header dir="auto">
+                    <Modal.Title>
+                        الخريطة
+                        <h6 className='subheading-work-hours'>حدّد موقع متجرك على الخريطة.</h6>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    < MapBoxSignUp optionStore={optionStore} />
+                </Modal.Body>
+                <Modal.Footer dir="auto">
+                    <Button variant="secondary" className="btn btn-calendar-modal-cancel"
+                        onClick={handleCloseLocationOnMap}>
+                        إلغاء
+                    </Button>
+                    <Button variant="primary" className="btn btn-calendar-modal-save"
+                        onClick={handleCloseLocationOnMap}>
+                        حفظ الموقع
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
 
     )

@@ -127,7 +127,8 @@
 }
 
 .LikeProd {
-  margin-right: 22px;
+  position: relative;
+  margin-right: 20px;
   direction: rtl;
 }
 

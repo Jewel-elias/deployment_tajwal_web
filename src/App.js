@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './bootstrap/css/bootstrap.css';
 import './bootstrap/css/animate.css';
 import './components/css&scss_File/App.css'
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import $ from 'jquery';
 import Popper from 'popper.js';
 import bs_js1 from './bootstrap/js/bootstrap';
@@ -36,11 +36,45 @@ import AboutUs from './components/AboutUs/aboutUs';
 
 function App() {
   const state = useSelector((state) => state.data);
-  // const isUserLogin = state.isUserLogin;
-  // const [dropdownOpenLogin, setdropdownOpenLogin] = useState(false);
-  const { dropdownOpenLogin, setdropdownOpenLogin } = useBetween(state.useShareState);
+  const st = useSelector((state) => state.dataB);
+
+  // Access Token
+  const { accessToken, setAccessToken } = useBetween(st.useSharingFilters);
+
+  const { buisnessProfile, setBuisnessProfile } = useBetween(st.useSharingFilters);
+
+  const { dropdownOpenLogin, setdropdownOpenLogin, profileData, setProfileData } = useBetween(state.useShareState);
+  const [urlImage, setImage] = useState('');
+
+
   const { isUserOrBuisness, setisUserOrBusisness } = useBetween(state.useShareState);
   const { isUserLogin, setisUserLogin } = useBetween(state.useShareState);
+
+  useEffect(() => {
+
+    if (accessToken !== '') { setisUserLogin(true) }
+    else { setisUserLogin(false) }
+  }, [accessToken]);
+  useEffect(() => {
+    // new WOW.WOW({
+    //     live: false
+    // }).init();
+
+    setProfileData(profileData);
+    if (profileData.image != undefined) {
+      setImage('http://localhost:1337/image_clsm3xbb4a.png');
+      // alert(urlImage)
+    }
+
+    // if (buisnessProfile.workPicture !== ''&& isUserOrBuisness=='business')
+    //   {setImage(buisnessProfile.workPicture);  }
+    //   console.log(urlImage)
+    // setBuisnessProfile(buisnessProfile)
+
+
+  }, [profileData, urlImage])
+
+
   const { currentRoot, setcurrentRoot } = useBetween(state.useShareState);
   const [noti, setNoti] = useState('#');
   const [shkoa, setShkoa] = useState('#');
@@ -61,6 +95,7 @@ function App() {
 
   }
 
+
   // alert(currentRoot);
   const [dropdownOpenUser, setdropdownOpenUser] = useState(false);
   const [dropdownOpenNotif, setdropdownOpenNotif] = useState(false);
@@ -75,6 +110,8 @@ function App() {
     setNewFeed(0);
     setdropdownOpenFeed(!dropdownOpenFeed);
   }
+
+
   document.body.style.background = 'none'
   function activeNow(a) {
     const active = document.querySelector(a);
@@ -86,6 +123,8 @@ function App() {
       });
     // active.style.fontSize = '0.83rem;';
     active.style.borderBottom = "thin solid #8cb590";
+    if (a == '.Prof' || a == '.ContUs' || a == '.signup')
+      active.style.borderBottom = "none";
 
     if (a == '.Noti') {
       // if (isUserLogin == true)
@@ -181,26 +220,21 @@ function App() {
                 <NavLink to='/Top10' style={{ textDecoration: 'none' }}>
                   <li><a className="nav-link Top " onClick={() => activeNow('.Top')}><i className='fas fa-medal' title='تقييمات'></i></a></li>
                 </NavLink>
-                <NavLink to='/sugg' style={{ textDecoration: 'none', display: isUserOrBuisness == 'buisness' || isUserOrBuisness == '' ? 'none' : 'block' }}>
-                  <span className='NewSugg' style={{
-                    display: NewSugg > 9 && NewSugg != 0 ? 'block' : 'none'
-                  }} >+9</span>
-                  <span className='NewSugg' style={{
-                    display: NewSugg > 9 || NewSugg == 0 ? 'none' : 'block'
-                    , paddingLeft: '6px'
-                  }}>{NewSugg}</span>
+                <NavLink to='/sugg' style={{ textDecoration: 'none', display: isUserOrBuisness == 'business' || isUserOrBuisness == '' ? 'none' : 'block' }}>
+                 
+                
                   <li><a className="nav-link Req" onClick={() => activeNow('.Req')}><i className="fa fa-lightbulb-o" aria-hidden="true" title='اقتراحات'></i></a></li>
                 </NavLink>
                 <Dropdown isOpen={dropdownOpenFeed} toggle={toggleFeed} style={{ display: isUserOrBuisness == 'user' || isUserOrBuisness == '' ? 'none' : 'block' }}>
                   <DropdownToggle className="dropdown-notification-navbar nav-link" >
 
-                    <span className='NewNoti' style={{
+                    {/* <span className='NewNoti' style={{
                       display: NewFeed > 9 && NewFeed != 0 ? 'block' : 'none'
                     }} >+9</span>
                     <span className='NewNoti' style={{
                       display: NewFeed > 9 || NewFeed == 0 ? 'none' : 'block',
                       paddingLeft: '6px'
-                    }}>{NewNoti}</span>
+                    }}>{NewNoti}</span> */}
                     <li><a className="nav-link FedB"
                     ><i className="fas fa-frown" aria-hidden="true" title='شكاوي'></i></a></li>
 
@@ -224,13 +258,13 @@ function App() {
                 <Dropdown isOpen={dropdownOpenNotif} toggle={toggleNotif} style={{ display: isUserOrBuisness == '' ? 'none' : 'block' }}>
                   <DropdownToggle className="dropdown-notification-navbar nav-link" >
 
-                    <span className='NewNoti' style={{
+                    {/* <span className='NewNoti' style={{
                       display: NewNoti > 9 && NewNoti != 0 ? 'block' : 'none'
                     }} >+9</span>
                     <span className='NewNoti' style={{
                       display: NewNoti > 9 || NewNoti == 0 ? 'none' : 'block',
                       paddingLeft: '6px'
-                    }}>{NewNoti}</span>
+                    }}>{NewNoti}</span> */}
                     <li><a className="nav-link Noti"
                       onClick={() => activeNow('.Noti')}><i className="fa fa-bell-o" aria-hidden="true" title='اشعارات'></i></a></li>
 
@@ -245,10 +279,10 @@ function App() {
                 </NavLink> */}
 
                 <NavLink to='/Welcome' style={{ textDecoration: 'none' }}><li><a className="nav-link Maps"
-                  onClick={() => activeNow('.Maps')} style={{ display: isUserOrBuisness == 'buisness' ? 'none' : 'block' }}><i className='fas fa-route' title='الخريطة'></i></a></li>
+                  onClick={() => activeNow('.Maps')} style={{ display: isUserOrBuisness == 'business' ? 'none' : 'block' }}><i className='fas fa-route' title='الخريطة'></i></a></li>
                 </NavLink>
                 <NavLink to='/ProductBusi' style={{ textDecoration: 'none' }}><li><a className="nav-link Products"
-                  onClick={() => activeNow('.Products')} style={{ display: isUserOrBuisness == 'buisness' ? 'block' : 'none' }}><i className="fas fa-clipboard-list" aria-hidden="true" title='منتجاتي'></i></a></li>
+                  onClick={() => activeNow('.Products')} style={{ display: isUserOrBuisness == 'business' ? 'block' : 'none' }}><i className="fas fa-clipboard-list" aria-hidden="true" title='منتجاتي'></i></a></li>
                 </NavLink>
 
                 <Dropdown isOpen={dropdownOpenLogin} toggle={toggleLogin}
@@ -264,26 +298,30 @@ function App() {
                 </Dropdown>
                 <NavLink to='/SignUp' style={{ textDecoration: 'none' }}>
                   <li>
-                    <a className="nav-link signup" style={{ visibility: isUserLogin == false ? 'visible' : 'hidden' }}><bdi> إنشاء حساب</bdi></a>
+                    <div className="nav-link signup" style={{ visibility: isUserLogin == false ? 'visible' : 'hidden' }}
+                      onClick={() => activeNow('.signup')}><bdi> إنشاء حساب</bdi></div>
                   </li>
                 </NavLink>
                 <div className='nav-link photoAndName' style={{ visibility: isUserLogin == false ? 'hidden' : 'visible' }}>
-                  <img src={state.currentUser[0].userPhoto} className='nav-link userPhoto' ></img>
+                  <img src={(isUserOrBuisness === 'business') ? buisnessProfile.workPicture : urlImage} className='nav-link userPhoto' ></img>
                   <Dropdown isOpen={dropdownOpenUser} toggle={toggleUser}>
                     <DropdownToggle className='dropDown-user' caret>
 
-                      <span className='nav-link userName' >{state.currentUser[0].userName}</span>
+                      <span className='nav-link userName' >{(isUserOrBuisness === 'business') ? buisnessProfile.WorkName : profileData.name}</span>
 
                     </DropdownToggle>
                     <DropdownMenu className='menu-user' onClick={toggleUser} end>
                       <NavLink to={profile} style={{ textDecoration: 'none' }}>
-                        <div className='profileIcon'><bdi><i className="fa fa-user" aria-hidden="true"></i> الصفحة الشخصية</bdi></div>
+                        <div className='profileIcon' onClick={() => activeNow('.Prof')}><bdi><i className="fa fa-user" aria-hidden="true"></i> الصفحة الشخصية</bdi></div>
                       </NavLink>
                       {/* <div><bdi><i className="fa fa-cog" aria-hidden="true"></i> الاعدادات</bdi></div> */}
                       <NavLink to={'./ContactUs'} style={{ textDecoration: 'none' }}>
-                        <div className='profileIcon'><bdi><i className="fa fa-phone" aria-hidden="true"></i> تواصل معنا</bdi></div>
+                        <div className='profileIcon' onClick={() => activeNow('.ContUs')}><bdi><i className="fa fa-phone" aria-hidden="true"></i> تواصل معنا</bdi></div>
                       </NavLink>
-                      <NavLink to='/Welcome' style={{ textDecoration: 'none' }}><div className='profileIcon' onClick={() => LogOut('.Maps')}><bdi><i className="fa fa-sign-out" aria-hidden="true"></i> تسجيل الخروج</bdi></div>
+                      <NavLink to='/Welcome' style={{ textDecoration: 'none' }}><div className='profileIcon' onClick={() => {
+                        setAccessToken('');
+                        LogOut('.Maps')
+                      }}><bdi><i className="fa fa-sign-out" aria-hidden="true"></i> تسجيل الخروج</bdi></div>
                       </NavLink>
                     </DropdownMenu>
                   </Dropdown>
@@ -322,14 +360,15 @@ function App() {
         <Route path="/ourServices" element={<OurServices />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/AboutUs" element={<AboutUs />} />
-      
-      
+
+
 
 
       </Routes>
       {/*  ------------------------------------------------------footer-------------------------------------------- */}
-      <footer>
-        <div className="footer">
+      <footer >
+        <div className="footer"  >
+          <div className='footerLine'></div>
           <div className="row1">
             <ul>
               <li><a href="#"><i className="fa fa-facebook"></i></a></li>
@@ -342,18 +381,18 @@ function App() {
           <div className="row1 footerWord">
             <ul>
 
-            <NavLink to='/ContactUs' style={{ textDecoration: 'none' }}>
-              <li><a href="#">تواصل معنا</a></li>
-            </NavLink>
+              <NavLink to='/ContactUs' style={{ textDecoration: 'none' }}>
+                <li onClick={() => { window.scrollTo(0, 0) }}><a href="#">تواصل معنا</a></li>
+              </NavLink>
               <NavLink to='/ourServices' style={{ textDecoration: 'none' }}>
-              <li><a href="#">خدماتنا</a></li>
+                <li onClick={() => { window.scrollTo(0, 0) }}><a href="#">خدماتنا</a></li>
               </NavLink>
               <NavLink to='/PrivacyPolicy' style={{ textDecoration: 'none' }}>
-              <li><a href="#">سياسة الخصوصية</a></li>
+                <li onClick={() => { window.scrollTo(0, 0) }}><a href="#">سياسة الخصوصية</a></li>
               </NavLink>
-              <NavLink to="/AboutUs" style={{textDecoration:'none'}}>
-              <li><a href="#">من نحن؟</a></li>
-             </NavLink>
+              <NavLink to="/AboutUs" style={{ textDecoration: 'none' }}>
+                <li onClick={() => { window.scrollTo(0, 0) }}><a href="#">من نحن؟</a></li>
+              </NavLink>
             </ul>
           </div>
 
@@ -376,18 +415,18 @@ function App() {
             <ul>
               <bdi>
                 <b></b>
-              يمكنك تحميل التطبيق من خلال الرابط: <a href='#' className='linkApp' style={{color:'rgb(242, 241, 241)'}}>من هنا</a> 
+                يمكنك تحميل التطبيق من خلال الرابط: <a href='#' className='linkApp' style={{ color: 'rgb(242, 241, 241)' }}>من هنا</a>
               </bdi>
             </ul>
           </div>
 
 
         </div>
-   
-      </footer >
-</div>
 
-   
+      </footer >
+    </div>
+
+
 
 
   );

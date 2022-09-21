@@ -18,7 +18,7 @@ function Top10(props) {
     const [citySelect, setCitySelect] = useState('حمص');
     const [streetSelect, setStreetSelect] = useState('الحضارة-العشاق');
     const [storeSelect, setStoreSelect] = useState('مطاعم');
-
+    const { resStor, setStore } = useBetween(state.useShareState);
 
     setTimeout(() => {
         var skeletonTodoLoad = document.getElementsByClassName('skeleton-top-10-load');
@@ -32,7 +32,11 @@ function Top10(props) {
         }
 
     }, 5000)
-
+    useEffect(() => {
+        
+        setStore(resStor);
+       
+        },[resStor.length]);
     const { city, street, store } = useBetween(state.useShareState);
     var cnt = 0;
     var firstLoad = 'true';
@@ -93,18 +97,18 @@ function Top10(props) {
             </div>
         )
     })
+const stores=resStor;
+    const ListItems = stores.sort((a, b) => a.rateValue - b.rateValue).reverse().map(item => {
 
-    const ListItems = state.stores.features.sort((a, b) => a.properties.star - b.properties.star).reverse().map(item => {
 
-
-        if (((citySelect == item.properties.city)
-            && (streetSelect == item.properties.street) &&
-            (storeSelect == 'مطاعم' && item.properties.type == 'مطعم')
+        if (((citySelect == 'حمص')
+            && (streetSelect == 'الحضارة-العشاق') &&
+            (storeSelect == 'مطاعم' && item.businessTypeName.name == 'مطاعم')
         )
             ||
-            ((citySelect == item.properties.city)
-                && (streetSelect == item.properties.street) &&
-                (storeSelect == item.properties.type)
+            ((citySelect =='حمص')
+                && (streetSelect =='الحضارة-العشاق' ) &&
+                (storeSelect == item.businessTypeName.name)
 
             )
 
@@ -127,24 +131,24 @@ function Top10(props) {
                     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
 
 
-                    <div className='ContTop10 list-top-10-load' key={item.id} >
+                    <div className='ContTop10 list-top-10-load' key={item._id} >
                         <div className='idTop10'>{cnt}</div>
                         <div className={`${cnt <= 3 ? "top3id" : ""}`}></div>
-                        <img src={item.properties.photo} className={`${classid} imgTop10`}></img>
+                        <img src={item.image.url} className={`${classid} imgTop10`}></img>
                         <div className=' infoTop10'>
-                            <div className='infoTop nameTop10'>{item.properties.name}</div>
+                            <div className='infoTop nameTop10'>{item.name}</div>
                             <div className='infoTop locTop10'><i className="fa fa-map-marker" aria-hidden="true"></i>
-                                {item.properties.street} </div>
+                                {item.location.address} </div>
                             <div className='infoTop'><bdi>
 
-                                <i className={`${item.properties.type == 'مطعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i></bdi>
-                                <span>{item.properties.type}</span>
+                                <i className={`${item.businessTypeName.name == 'مطاعم' ? "fa fa-cutlery" : "fas fa-tshirt"}`}></i></bdi>
+                                <span>{item.businessTypeName.name }</span>
                             </div>
                             <div className='StTop10Cont'>
                                 <div className='infoTop starsTop10'>
                                     <StarRatings
 
-                                        rating={item.properties.star}
+                                        rating={item.rateValue}
                                         starRatedColor="#FC0"
                                         numberOfStars={5}
                                         name='rating'
@@ -155,7 +159,7 @@ function Top10(props) {
 
 
                                     />
-                                    <span className='rateTop10'>{item.properties.star}</span>
+                                    <span className='rateTop10'>{item.rateValue.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

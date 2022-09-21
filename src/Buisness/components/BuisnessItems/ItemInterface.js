@@ -14,6 +14,9 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ItemDeleteModal from './itemDeleteModal';
 import ItemEditModal from './itemEditModal';
+import StarRatings from 'react-star-ratings';
+import StartRate from '../../../components/map/startRate/startRate';
+import Axios from 'axios'
 
 
 function SampleNextArrow(props) {
@@ -49,6 +52,7 @@ function ItemInterface() {
     // HOOKS
     const st = useSelector((state) => state.dataB);
     const state = useSelector((state) => state.data);
+    const { buisnessProfile, setBuisnessProfile } = useBetween(st.useSharingFilters);
     const [refresh, setRefresh] = useState(true);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const dispatch = useDispatch();
@@ -58,10 +62,24 @@ function ItemInterface() {
     const [colorDislike, setColorDisLike] = useState(null);
     let location = useLocation();
     location = location.state.itemId;
-    const [items, setItems] = useState((st.buisnessProfile.WorkType === 'مطعم') ? (st.items) : (st.clothesItems));
+
+    // business work type
+    const { businessWorkType, setBusinessWorkType } = useBetween(st.useSharingFilters);
+
+    // User Type
+    const { userType, setUserType } = useBetween(st.useSharingFilters);
+
+    // Access Token
+    const { accessToken, setAccessToken } = useBetween(st.useSharingFilters);
+
+    // All products
+    const { items, setItems } = useBetween(st.useSharingFilters);
+
+    // const [items, setItems] = useState((businessWorkType === 'مطاعم') ? (st.items) : (st.clothesItems));
     // const [item, setItem] = useState(items[location-1]);
     const { item, setItem } = useBetween(st.useSharingFilters);
-    setItem(items[location - 1])
+    // console.log(location)
+
     const [comments, setComments] = useState(item.itemCommentsDetails);
     // Like / DisLike
     const { dropdownOpenLogin, setdropdownOpenLogin } = useBetween(state.useShareState);
@@ -125,74 +143,6 @@ function ItemInterface() {
             setdropdownOpenLogin(!dropdownOpenLogin)
     }
 
-    const like = (item) => {
-
-        if (isUserLogin == true) {
-            if (item.likeInt === true) {
-                item.itemLikes -= 1;
-                setClickLike(item.itemLikes);
-                item.likeInt = false;
-                setColorLike(item.likeInt);
-                //backend;
-
-            }
-            else {
-
-                if (item.dislikeInt === true) {
-                    item.itemDislikes -= 1;
-
-                    setClickDisLike(item.itemDislikes);
-                    item.dislikeInt = false;
-                    setColorDisLike(item.dislikeInt);
-                }
-
-                item.itemLikes += 1;
-                setClickLike(item.itemLikes);
-                item.likeInt = true;
-                setColorLike(item.likeInt);
-
-            }
-        }
-        else {
-            dropDownLogin()
-        }
-
-    };
-
-    const dislike = (item) => {
-
-        if (isUserLogin == true) {
-            if (item.dislikeInt === true) {
-                item.itemDislikes -= 1;
-                setClickDisLike(item.itemDislikes);
-                item.dislikeInt = false;
-                setColorDisLike(item.dislikeInt);
-
-                //backend;
-
-
-            }
-            else {
-
-                if (item.likeInt === true) {
-                    item.itemLikes -= 1;
-                    setClickLike(item.like);
-                    item.likeInt = false;
-                    setColorLike(item.likeInt);
-                }
-
-                item.itemDislikes += 1;
-                setClickDisLike(item.dislikeitemDislikes);
-                item.dislikeInt = true;
-                setColorDisLike(item.dislikeInt);
-
-            }
-        }
-        else {
-            dropDownLogin();
-        }
-
-    };
 
     // SHOW MORE
     const [btnNameComments, setbtnNameComments] = useState('عرض المزيد');
@@ -221,7 +171,9 @@ function ItemInterface() {
 
 
     useEffect(() => {
-    }, [refresh, item]);
+        setItem(items[location])
+        console.log(items[location])
+    }, [refresh, item, items]);
 
 
     // MODAL DELETE COMMENT VARIABLES
@@ -256,6 +208,7 @@ function ItemInterface() {
         }
         setComments(tempCommentDetails)
         handleClose();
+
     }
 
 
@@ -276,22 +229,22 @@ function ItemInterface() {
 
 
     const handleDeleteReplyModal = (itemId) => {
-        dispatch({
-            type: 'delete-reply',
-            state: {
-                itemId: itemId - 1,
-                commentId: commentId - 1,
-                replyId: replyId - 1
-            }
-        });
+        // dispatch({
+        //     type: 'delete-reply',
+        //     state: {
+        //         itemId: itemId - 1,
+        //         commentId: commentId - 1,
+        //         replyId: replyId - 1
+        //     }
+        // });
         setRefresh(!refresh);
         handleCloseDeleteReplyModal();
     }
 
     // Constants And Variables
-    // const items = (st.buisnessProfile.WorkType === 'مطعم') ? (st.items) : (st.clothesItems);
+    // const items = (businessWorkType === 'مطاعم') ? (st.items) : (st.clothesItems);
     // const item = items[location - 1];
-    let UserType = st.userType; // Buisness OR Client
+    // let userType = userType; // business OR user
 
     var newReply = {
         id: 3, // number of replies plus one
@@ -302,9 +255,10 @@ function ItemInterface() {
     }
 
     var newComment = {
-        id: 3,
-        clientName: (isUserOrBuisness === 'buisness') ? st.buisnessProfile.WorkName : state.currentUser[0].userName,
-        clientPhoto: (isUserOrBuisness === 'buisness') ? st.buisnessProfile.workPicture : state.currentUser[0].userPhoto,
+        commentNumber: items[location].itemCommentsDetails.length,
+        id: '555',
+        clientName: (isUserOrBuisness === 'business') ? buisnessProfile.WorkName : state.currentUser[0].userName,
+        clientPhoto: (isUserOrBuisness === 'business') ? buisnessProfile.workPicture : state.currentUser[0].userPhoto,
         date: '28/11/2021',
         text: 'شكرا لدعمكم .. منتمنى دائما نكون عند حسن ظنك',
         repliesVisibility: false,
@@ -326,15 +280,16 @@ function ItemInterface() {
 
     // Functions
     //** Replies */ 
-    const showReplies = (itemId, commentId, currentVisibility) => {
-        dispatch({
-            type: 'switch-replies-visibility',
-            state: {
-                itemId: itemId,
-                commentId: commentId,
-                visibile: !currentVisibility
-            }
-        })
+    const showReplies = (itemId, commentId, currentVisility) => {
+        // dispatch({
+        //     type: 'switch-replies-visibility',
+        //     state: {
+        //         itemId: itemId,
+        //         commentId: commentId,
+        //         visibile: !currentVisibility
+        //     }
+        // })
+        items[location].itemCommentsDetails[commentId].repliesVisibility = !currentVisility;
         setRefresh(!refresh)
     }
     const writingReply = (event) => {
@@ -378,17 +333,14 @@ function ItemInterface() {
     }
     const addNewCommentButton = (itemId) => {
         if (isUserLogin == false) {
-            window.scrollTo(0, 0)
+            // window.scrollTo(0, 0)
             setdropdownOpenLogin(!dropdownOpenLogin)
         }
         else {
-            newComment.id = item.itemCommentsDetails.length + 1;
-            const updateComments = [
-
-                ...comments,
-                newComment
-            ];
-            setComments(updateComments);
+            newComment.commentNumber = items[location].itemCommentsDetails.length + 1;
+            items[location].itemCommentsDetails.push(newComment)
+            setItems(items)
+            // setComments(updateComments);
             // dispatch({
             //     type: 'add-new-comment-btn',
             //     state: {
@@ -396,6 +348,21 @@ function ItemInterface() {
             //         newComment: newComment
             //     }
             // })
+            const data = {
+                "productId": items[location].itemId,
+                "text": newComment.text
+            }
+            const headers = {
+                'Authorization': 'Bearer ' + accessToken,
+                "content-type": "application/json;charset=UTF-8"
+            };
+            Axios.post(
+                "https://tajwal2.herokuapp.com/api/comments",
+                data,
+                { headers }
+            ).then(res => { console.log(res.data) })
+                .catch(err => console.log(err))
+
             document.getElementById('comment-input').value = '';
             setRefresh(!refresh)
         }
@@ -479,7 +446,7 @@ function ItemInterface() {
     })
 
     const tempSkeletonSimilarMeals = ['skeletonMeal1', 'skeletonMeal2', 'skeletonMeal3', 'skeletonMeal4'
-    ,'skeletonMeal5', 'skeletonMeal6', 'skeletonMeal7'];
+        , 'skeletonMeal5', 'skeletonMeal6', 'skeletonMeal7'];
     var skeletonSimilarMeals = tempSkeletonSimilarMeals.map(skeleton => {
         return (
             <div key={skeleton} className='skeleton-similar-meal skeleton-similar-meal-load col-2'>
@@ -504,10 +471,30 @@ function ItemInterface() {
                     <div className="col imgs-information-container list-item-details-load" key={item.itemId + 1}>
                         <div className='item-header-details d-flex justify-content-between' dir='rtl'>
                             <span className='item-header-name' dir='rtl'>{item.itemName}</span>
+                            <span className='starItem'
+                                style={{ display: isUserOrBuisness == 'business' ? 'none' : 'block' }}><StartRate id={0} /></span>
+                            <span className='starItem'
+                                style={{ display: isUserOrBuisness == 'business' ? 'block' : 'none' }}>
+                                <div className='itemInf starsTop10'>
+                                    <StarRatings
+
+                                        rating={2.4}
+                                        starRatedColor="#FC0"
+                                        numberOfStars={5}
+                                        name='rating'
+                                        starDimension="20px"
+                                        starSpacing="0px"
+                                        direction='rtl'
+
+                                    />
+                                    <span className='rateTop10'>2.4</span>
+                                </div>
+                            </span>
                             <span className='item-header-price'>({item.itemPrice})ل.س</span>
                         </div>
-                        <div className='item-describe-details' dir='auto'>
-                            {item.itemText.slice(0, 300)}...
+
+                        <div className='item-describe-details' dir='auto' >
+                            {(item.itemText !== undefined) ? item.itemText.slice(0, 300) : item.itemText}...
                         </div>
                         <div className='item-ingredients-details' dir='auto'>
                             <span>النوع:</span>
@@ -530,30 +517,32 @@ function ItemInterface() {
                             </span>
                         </div>
                         {
-                            st.buisnessProfile.WorkType === 'مطعم' ? (
+                            businessWorkType === 'مطاعم' ? (
                                 <div></div>
                             ) : (
                                 <div className='item-categories-details item-sizes-details' dir='rtl'>
                                     <span>المقاسات المتوفّرة:</span>
                                     <span className='item-ingredients-spans'>
                                         {
-                                            item.itemSizes.length ? item.itemSizes.map(size => {
-                                                return (
-                                                    <span key={size} className='input-add-item category-item'>{size + ' '}</span>
+                                            item.itemSizes !== undefined ?
+                                                item.itemSizes.length ? item.itemSizes.map(size => {
+                                                    return (
+                                                        <span key={size} className='input-add-item category-item'>{size + ' '}</span>
+                                                    )
+                                                }
                                                 )
-                                            }
-                                            )
-                                                :
-                                                (
-                                                    <span key={"no"} className='input-add-item category-item'>غير محدد بعد!</span>
-                                                )
+                                                    :
+                                                    (
+                                                        <span key={"no"} className='input-add-item'>لا توجد مقاسات محددة</span>
+                                                    )
+                                                : (<></>)
                                         }
                                     </span>
                                 </div>
                             )
                         }
                         {
-                            UserType === 'Buisness' ? (
+                            userType === 'business' ? (
                                 <div className="buttons-edit-delete-item" dir='auto'>
                                     <span>هل تريد؟</span>
                                     <ItemEditModal itemId={item.itemId} />
@@ -579,11 +568,11 @@ function ItemInterface() {
                         <i className="fa fa-angle-left fa-5x left-arrow-album" aria-hidden="true"
                             onClick={toPreviousPhoto} ></i>
 
-                        <img src={item.itemPhotos[currentPhotoIndex]} className="imgs-in-album" alt="..." />
+                        <img src={item.itemPhotos !== undefined ? item.itemPhotos[currentPhotoIndex] : item.itemPhotos} className="imgs-in-album" alt="..." />
 
-                        <div className='div-over-img-album d-flex'>
+                        {/* <div className='div-over-img-album d-flex'>
                             {
-                                UserType === 'Buisness' ? (
+                                userType === 'business' ? (
                                     <div className='interaction-item'>
                                         <i className="iconProd bi bi-hand-thumbs-up"></i>
                                         <span>{item.itemLikes}</span>
@@ -600,7 +589,7 @@ function ItemInterface() {
                                 )
                             }
                             {
-                                UserType === 'Buisness' ? (
+                                userType === 'business' ? (
                                     <div className='interaction-item'>
                                         <i className="iconProd bi bi-hand-thumbs-down"></i>
                                         <span>{item.itemDislikes}</span>
@@ -621,7 +610,7 @@ function ItemInterface() {
                                 <i className="iconProd bi bi-chat-square "></i>
                                 <span>{item.itemCommentsDetails.length}</span>
                             </div>
-                        </div>
+                        </div> */}
                         <i className="fa fa-angle-right fa-5x right-arrow-album" aria-hidden="true"
                             onClick={toNextPhoto} ></i>
                     </div>
@@ -631,7 +620,10 @@ function ItemInterface() {
             {/* Seperator */}
             <div className='seperator-between-item-container'></div>
 
+
             {/* Comments */}
+            {/*{*/}
+            {/*buisnessProfile.showComment ? (*/}
             <div className='item-comments-container' dir='auto' >
                 <div className='comments-header-div'>التّعليقات:</div>
                 <ShowMore maxHeight={280}
@@ -644,7 +636,7 @@ function ItemInterface() {
                     <div className='comments-div'>
                         {skeletonItems}
                         {
-                            comments.length ? comments.map(comment => {
+                            items[location].itemCommentsDetails.length ? items[location].itemCommentsDetails.map(comment => {
                                 return (
                                     <div key={comment.id} className="comment-and-replies list-item-comments-load">
                                         <div className='comment-box'>
@@ -653,7 +645,7 @@ function ItemInterface() {
                                                 <div className="row">
                                                     <div className='comment-name col'>{comment.clientName}</div>
                                                     {
-                                                        ((isUserOrBuisness === 'buisness') ? (comment.clientName === st.buisnessProfile.WorkName ? true : false)
+                                                        ((isUserOrBuisness === 'business') ? (comment.clientName === st.buisnessProfile.WorkName ? true : false)
                                                             : (comment.clientName === state.currentUser[0].userName ? true : false))
                                                             ?
                                                             (
@@ -695,7 +687,7 @@ function ItemInterface() {
                                                 <div className='comment-reply' dir='ltr'>
                                                     {comment.replies.length}
                                                     <i className="bi bi-reply-fill"></i>
-                                                    <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => showReplies(location - 1, comment.id, comment.repliesVisibility)}>Reply</span>
+                                                    <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => showReplies(location, comment.commentNumber, comment.repliesVisibility)}>Reply</span>
                                                 </div>
                                             </div>
 
@@ -762,7 +754,7 @@ function ItemInterface() {
                                                     <div className='comment-text add-reply-text'>
                                                         <input type="text" placeholder='اكتب رد لك..' className='reply-input'
                                                             id={'id-reply-input' + comment.id} onChange={writingReply} />
-                                                        <span className="add-reply-button" onClick={() => addNewReplyButton(location - 1, comment.id)}><i className="bi bi-send fa-lg add-reply-button"></i></span>
+                                                        <span className="add-reply-button" onClick={() => addNewReplyButton(location, comment.id)}><i className="bi bi-send fa-lg add-reply-button"></i></span>
                                                     </div>
 
                                                 </div>
@@ -782,7 +774,7 @@ function ItemInterface() {
                                 <div className='comment-text add-reply-text add-comment-text'>
                                     <input type="text" placeholder='اكتب تعليق..' className='reply-input add-comment-input'
                                         id='comment-input' onChange={writingComment} />
-                                    <span className="add-reply-button" onClick={() => addNewCommentButton(location - 1)}><i className="bi bi-send fa-lg add-reply-button"></i></span>
+                                    <span className="add-reply-button" onClick={() => addNewCommentButton(location)}><i className="bi bi-send fa-lg add-reply-button"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -790,13 +782,16 @@ function ItemInterface() {
                 </ShowMore>
 
             </div>
+            {/*) : (<></>)*/}
+            {/*}*/}
+
 
             {/* Seperator */}
             <div className='seperator-between-item-container'></div>
 
             {/* Buisness ===> no Slider *** Client ===> Slider */}
             {
-                UserType === 'Buisness' ? (
+                userType === 'business' ? (
                     <div></div>
                 ) : (
 
@@ -813,16 +808,16 @@ function ItemInterface() {
                                 <button style={styleBtn} className="">{btnNameProducts}</button>}
                         >
                             <div className='meals-div row g-4'>
-                            {skeletonSimilarMeals}
+                                {skeletonSimilarMeals}
                                 {
-                                    st.items.length ? st.items.map(item => {
+                                    st.similarFood.length ? st.similarFood.map((item, index) => {
                                         return (
                                             <NavLink className='list-similar-meal-load col-2' to="/itemInterface" state={{ itemId: item.itemId }} key={item.itemId + 1}
-                                                onClick={() => { window.scrollTo(0, 0) }}
+                                                // onClick={() => { window.scrollTo(0, 0) }}
                                                 style={{ textDecoration: 'none', color: 'inherit' }} exact="true" >
-                                                <div key={item.itemId + 8} className='similar-meal'>
-                                                    <img src={item.itemPhotos[0]} className="meal-img" alt="..." />
-                                                    <div className='div-over-similar-meal'>{item.itemName}</div>
+                                                <div key={item.id + 8} className='similar-meal'>
+                                                    <img src={item.photo} className="meal-img" alt="..." />
+                                                    <div className='div-over-similar-meal'>{item.name}</div>
                                                 </div>
                                             </NavLink>
 

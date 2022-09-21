@@ -1,37 +1,61 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../../bootstrap/css/bootstrap.css'
 import '../../style/App.css';
 import { useSelector } from 'react-redux';
 import { useBetween } from 'use-between';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
+import Axios from 'axios'
 
 
 function FilterItems(props) {
     // HOOKS
     const st = useSelector((state) => state.dataB);
+    const state = useSelector((state) => state.data);
+
+    const { isUserOrBuisness, setisUserOrBusisness } = useBetween(state.useShareState);
+
+    // business work type
+    const { businessWorkType, setBusinessWorkType } = useBetween(st.useSharingFilters);
+
+    // User Type
+    const { userType, setUserType } = useBetween(st.useSharingFilters);
+
+    const { TypesUp, setTypesUp } = useBetween(st.useSharingFilters);
+    var tempTypesUp = TypesUp;
+
+    const { categoriesDropdown, setCategoriesDropdown } = useBetween(st.useSharingFilters);
+
+    setUserType(((isUserOrBuisness === 'business') ? 'business' : 'user'));
+
+    const { buisnessProfile, setBuisnessProfile } = useBetween(st.useSharingFilters);
+
+    const { sizes, setSizes } = useBetween(st.useSharingFilters);
+    var { selectedSizes, setSelectedSizes } = useBetween(st.useSharingFilters);
+
     const { setSelectedCategory, selectedFilterDropdown1, setSelectedFilterDropdown1,
         selectedFilterDropdown2, setSelectedFilterDropdown2 } = useBetween(st.useSharingFilters)
 
     // Constants And Variables
-    const filters = (st.buisnessProfile.WorkType === 'مطعم' ? (st.filters) : (st.filtersClothes));
-    let length = filters.length;
+    const filters = categoriesDropdown;
+    let length = categoriesDropdown.length;
 
 
     // Skeleton wait load
     setTimeout(() => {
         var skeletonTodoLoad = document.getElementsByClassName('skeleton-filter-by-load');
-        for(let i = 0 ;i < 8 ;i++) {
+        for (let i = 0; i < skeletonTodoLoad.length; i++) {
             skeletonTodoLoad[i].style.display = 'none'
         }
 
         var listItemsLoad = document.getElementsByClassName('list-filter-by-load');
-        for(let i = 0 ;i < listItemsLoad.length ;i++) {
+        for (let i = 0; i < listItemsLoad.length; i++) {
             listItemsLoad[i].style.display = 'inline'
         }
     }, 5000)
 
-
+    useEffect(() => {
+    }, [TypesUp, categoriesDropdown])
     // Functions
     // Hover over filter items above dropdowns 
     const mouseOverFilter = (id) => {
@@ -95,6 +119,39 @@ function FilterItems(props) {
 
     }
 
+    //Filter By Size
+    const changeSizes = (event) => {
+        if (selectedSizes === undefined) {
+            // setSelectedSizes([]);
+            selectedSizes = []
+            // let x = [event.target.value]
+            // setSelectedSizes(x)
+            console.log('undefined');
+            console.log(selectedSizes);
+        }
+        else if (selectedSizes.includes(event.target.value)) {
+            let y, z
+            y = selectedSizes;
+            z = y.filter(function (value) {
+                return (value !== event.target.value);
+            });
+            selectedSizes = z;
+            setSelectedSizes(z);
+            console.log('delete')
+            console.log(selectedSizes);//بس اعمل حذف بتصير undefined 
+            console.log('z: '+z);
+        }
+        else if (selectedSizes.length >= 0 || selectedSizes === []) {
+            let x = selectedSizes;
+            x.push(event.target.value)
+            setSelectedSizes(x);
+            console.log('add');
+            console.log(selectedSizes);
+        }
+
+        // console.log(selectedSizes)
+    }
+
     const selectDropdown2 = (event) => {
         setSelectedFilterDropdown2(event)
     }
@@ -121,15 +178,15 @@ function FilterItems(props) {
 
     /* LIST OF FILTERS above dropdowns */
     const Listfilters = length ? (
-        filters.map(filter => {
+        categoriesDropdown.map(categ => {
             return (
-                <span className='filter-by list-filter-by-load' id={filter.filterId}
-                    onMouseMove={() => mouseOverFilter(filter.filterId)}
-                    onMouseLeave={() => mouseLeaveFilter(filter.filterId)}
-                    onClick={() => filterClick(filter.filterId, filter.filterType)}
-                    style={filter.filterType === 'الكل' ? { backgroundColor: "#47A851", borderWidth: "2px", fontWeight: "bold" } : {}}
-                    key={filter.filterId}>
-                    {filter.filterType + ' '}
+                <span className='filter-by list-filter-by-load' id={categ.id}
+                    onMouseMove={() => mouseOverFilter(categ.id)}
+                    onMouseLeave={() => mouseLeaveFilter(categ.id)}
+                    onClick={() => filterClick(categ.id, categ.name)}
+                    style={categ.name === 'الكل' ? { backgroundColor: "#47A851", borderWidth: "2px", fontWeight: "bold" } : {}}
+                    key={categ.id}>
+                    {categ.name + ' '}
                 </span>
             )
         })
@@ -143,7 +200,7 @@ function FilterItems(props) {
     var skeletonItems = tempSkeletonFilterKeys.map(skeleton => {
         return (
             <span className='filter-by skeleton skeleton-filter-by skeleton-filter-by-load' key={skeleton} dir='rtl'
-                    style={{letterSpacing: '5px', color: '#ddd'}}>
+                style={{ letterSpacing: '5px', color: '#ddd' }}>
                 .....
             </span>
         )
@@ -195,6 +252,17 @@ function FilterItems(props) {
         });
 
     }
+
+    // Switch comment
+    const switchState = () => {
+        var temp = buisnessProfile;
+        temp.showComment = !temp.showComment;
+        setBuisnessProfile(temp);
+    }
+    const switchToggle = () => {
+        var temp2 = document.getElementById('commentVisibilty').defaultChecked;
+        document.getElementById('commentVisibilty').defaultChecked = ((temp2 === 'checked') ? ('') : ('checked'));
+    }
     return (
         <div className='filter-items-component'>
 
@@ -203,8 +271,23 @@ function FilterItems(props) {
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
 
 
-            <div>
-                <div dir='auto' className='filterItems'>
+            <div className='row'>
+                {/* Enable and Disable Comments */}
+                {/*
+                    st.userType === 'Buisness' ? (
+                        <div className='col-4 checkbox-comment-visible'>
+                        <label className="toggle-switch mx-2">
+                            <input type="checkbox" className="checkbox-open-close" id='commentVisibilty'
+                                onChange={() => switchToggle()}
+                                defaultChecked={((buisnessProfile.showComment) ? ('checked') : (''))} />
+                            <span className="switch-btn" onClick={() => switchState()}></span>
+                        </label>
+                        <span style={{ 'textDecoration': 'underline' }}>هل تريد السّماح للزبائن بإضافة تعليق على منتجاتك ؟</span>
+                    </div>
+                    ) : (<></>)
+                    */}
+
+                <div dir='auto' className='filterItems col'>
                     <div dir='rtl'>
                         {skeletonItems}
                     </div>
@@ -246,7 +329,7 @@ function FilterItems(props) {
                                         </div>
                                         <div className="field field2">
                                             {/* <span>من:</span> */}
-                                            <input type="number" className="input-max" defaultValue="5000" />
+                                            <input type="number" className="input-max" defaultValue="0" />
                                             <span>ل.س</span>
                                         </div>
                                     </div>
@@ -256,7 +339,7 @@ function FilterItems(props) {
                                     </div>
                                     <div className="range-input" dir='auto'>
                                         <input type="range" className="range-min" id="range-min" min="0" max="100000"
-                                            defaultValue="5000" step="100"
+                                            defaultValue="0" step="100"
                                             onMouseUp={() => changePrice('min', 'range-min')} />
                                         <input type="range" className="range-max" id="range-max" min="0" max="100000"
                                             defaultValue="35000" step="100"
@@ -268,17 +351,17 @@ function FilterItems(props) {
                             <Dropdown.Header className="dropdown-header dropdown-header-me-1">حسب التّصنيف:</Dropdown.Header>
                             <Dropdown.Item as="div" className="dropdown-item dropdown-item-me-1" eventKey="option-1">
                                 {
-                                    st.buisnessProfile.WorkType === 'مطعم' ? (
-                                        <div className='row row-cols-1 row-cols-md-2 veg-buttons-div'>
+                                    businessWorkType !== 'مطاعم' ? (
+                                        <div className='row row-cols-1 row-cols-md-3 types-buttons-div'>
                                             {
-                                                st.restaurantTypes.map(type => {
+                                                TypesUp.map(type => {
                                                     return (
-                                                        <div key={type.typeId} className='col'>
+                                                        <div key={type.id} className='col'>
                                                             <input className="form-check-input form-check-input-filter" type="checkbox" name="checkbox-type-filter"
-                                                                id={"typeCheckbox" + type.typeId} value={type.typeName}
+                                                                id={"typeCheckbox" + type.id} value={type.name}
                                                                 onChange={(event) => switchType(event)}
                                                             />
-                                                            <label className="form-check-label" htmlFor={"typeCheckbox" + type.typeId}>{type.typeName}</label>
+                                                            <label className="form-check-label" htmlFor={"typeCheckbox" + type.id}>{type.name}</label>
                                                         </div>
                                                     )
                                                 })
@@ -286,16 +369,16 @@ function FilterItems(props) {
                                         </div>
                                     ) :
                                         (
-                                            <div className='row row-cols-1 row-cols-md-3 types-buttons-div'>
+                                            <div className='row row-cols-1 row-cols-md-2 veg-buttons-div'>
                                                 {
-                                                    st.clothesTypes.map(type => {
+                                                    TypesUp.map(type => {
                                                         return (
-                                                            <div key={type.typeId} className='col'>
+                                                            <div key={type.id} className='col'>
                                                                 <input className="form-check-input form-check-input-filter" type="checkbox" name="checkbox-type-filter"
-                                                                    id={"typeCheckbox" + type.typeId} value={type.typeName}
+                                                                    id={"typeCheckbox" + type.id} value={type.name}
                                                                     onChange={(event) => switchType(event)}
                                                                 />
-                                                                <label className="form-check-label" htmlFor={"typeCheckbox" + type.typeId}>{type.typeName}</label>
+                                                                <label className="form-check-label" htmlFor={"typeCheckbox" + type.id}>{type.name}</label>
                                                             </div>
                                                         )
                                                     })
@@ -305,6 +388,31 @@ function FilterItems(props) {
                                 }
 
                             </Dropdown.Item>
+                            {
+                                (businessWorkType !== 'مطاعم') ? (
+                                    <>
+                                        <Dropdown.Header className="dropdown-header dropdown-header-me-1">حسب المقاسات:</Dropdown.Header>
+                                        <Dropdown.Item as="div" className="dropdown-item dropdown-item-me-1" eventKey="option-1">
+                                            <div className='row row-cols-1 row-cols-md-3 '>
+                                                {
+                                                    sizes.map(size => {
+                                                        return (
+                                                            <div key={size.id} className='col'>
+                                                                <input className="form-check-input form-check-input-filter" type="checkbox" name="checkbox-type-filter"
+                                                                    id={"typeCheckbox" + size.id} value={size.name}
+                                                                    onChange={(event) => changeSizes(event)}
+                                                                />
+                                                                <label className="form-check-label" htmlFor={"typeCheckbox" + size.id}>{size.name}</label>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+
+                                        </Dropdown.Item>
+                                    </>
+                                ) : (<></>)
+                            }
 
                         </DropdownButton>
 
@@ -342,9 +450,10 @@ function FilterItems(props) {
 
                     </div>
 
-                    <div className='seperate-line'></div>
+
 
                 </div>
+                <div className='seperate-line'></div>
             </div>
         </div>
 

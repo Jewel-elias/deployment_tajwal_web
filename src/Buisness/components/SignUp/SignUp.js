@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../../bootstrap/css/bootstrap.css'
 import '../../style/App.css';
 
@@ -18,13 +18,13 @@ function SignUp() {
 
     const st = useSelector((state) => state.dataB);
     const [buisnessORclient, setBuisnessORclient] = useState('notSelected');
-    const {signUpWelcome, setSignUpWelcome} = useBetween(st.useSharingFilters);
+    const { signUpWelcome, setSignUpWelcome } = useBetween(st.useSharingFilters);
 
     const chooseBuisnessClient = (event) => { setBuisnessORclient(event.target.value) }
-    const backToChooseBuisnessClient = () => { 
+    const backToChooseBuisnessClient = () => {
         setSignUpWelcome('اكتشف الأماكن و قُم بالتسوّق و التجوّل من المنزل بكلّ بساطة.');
         setBuisnessORclient('notSelected')
-     }
+    }
 
 
     return (
@@ -39,7 +39,7 @@ function SignUp() {
                     {
                         (buisnessORclient === 'notSelected') ? (
                             <div className='signup-form-types-client-buisness'>
-                                <div className='client-or-buisness-text' >هل ترغب بالانضمام لنا كَ:</div>
+                                <div className='client-or-buisness-text' >هل ترغب بالانضمام لنا كَـ :</div>
                                 <form className='client-or-buisness-question'>
                                     <div className='buisness-radio-box'>
                                         <label htmlFor="buisness"><img src={shopImg} alt='...' className='signup-shopImg' /></label>
@@ -67,7 +67,7 @@ function SignUp() {
                             <>
                                 <div className="signup-arrow-header" onClick={backToChooseBuisnessClient} dir="ltr">
                                     <i className='bi bi-arrow-left-circle fa-2x' />
-                                    <span className='signup-arrow-header-text'>إنشاء حساب كَ متجر</span>
+                                    <span className='signup-arrow-header-text'>إنشاء حساب كَـ متجر</span>
                                 </div>
                                 <SignUpBuisness />
                             </>
@@ -75,7 +75,7 @@ function SignUp() {
                             <>
                                 <div className="signup-arrow-header" onClick={backToChooseBuisnessClient} dir="ltr">
                                     <i className='bi bi-arrow-left-circle fa-2x' />
-                                    <span className='signup-arrow-header-text '>إنشاء حساب كَ زبون</span>
+                                    <span className='signup-arrow-header-text '>إنشاء حساب كَـ زبون</span>
                                 </div>
                                 <SignUpClient />
                             </>

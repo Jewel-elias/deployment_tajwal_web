@@ -4,6 +4,7 @@ import '../../../bootstrap/css/bootstrap.css';
 import '../../style/App.css';
 import { useSelector } from 'react-redux';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { useBetween } from 'use-between';
 // import { BrowserRouter, Routes, Route, Switch, Link, NavLink } from "react-router-dom";
 
 
@@ -11,7 +12,8 @@ function BuisnessNotifications(props) {
     const st = useSelector((state) => state.dataB);
     const state = useSelector((state) => state.data);
 
-    const notifications = st.notifications;
+    const { isUserOrBuisness, setisUserOrBusisness } = useBetween(state.useShareState);
+    const notifications = (isUserOrBuisness === 'buisness') ? (st.notifications) : (st.notificationsForClient);
     var keyNotification = '1';
     let length = notifications.length;
     // length=0;
@@ -29,19 +31,19 @@ function BuisnessNotifications(props) {
             listItemsLoad[i].style.display = 'flex'
         }
 
-        
+
     }, 3000)
 
     // SKELETONS
-    const tempSkeletonNotifications = ['skeletonNotif1','skeletonNotif2','skeletonNotif3','skeletonNotif4','skeletonNotif5'];
+    const tempSkeletonNotifications = ['skeletonNotif1', 'skeletonNotif2', 'skeletonNotif3', 'skeletonNotif4', 'skeletonNotif5'];
     var skeletonNotifications = tempSkeletonNotifications.map(skeleton => {
         var classText = 'notification-buisness-text title-animate';
         var classImg = 'rounded-circle notification-photo skeleton';
         var classLineImg = 'notification-line-img skeleton';
         return (
             <div className='notification-buisness skeleton-notification-load' key={skeleton} dir='rtl'>
-                <div className={classLineImg} style={{borderColor: 'transparent'}}></div>
-                <div className={classImg} style={{borderColor: 'transparent'}} alt="..." />
+                <div className={classLineImg} style={{ borderColor: 'transparent' }}></div>
+                <div className={classImg} style={{ borderColor: 'transparent' }} alt="..." />
                 <div className={classText}>
                     <div className="not-text skeleton skeleton-text-notif"></div>
                     <div className="not-date skeleton skeleton-text-notif"></div>
@@ -62,21 +64,41 @@ function BuisnessNotifications(props) {
             var classImgAdd;
             var classLineImgAdd;
 
-            if (notification.notificationType === 'dislike') {
-                classTextAdd = ' notification-text-' + notification.notificationType;
-                classText = classText + classTextAdd;
+            // if (notification.notificationType === 'dislike') {
+            //     classTextAdd = ' notification-text-' + notification.notificationType;
+            //     classText = classText + classTextAdd;
 
-                classImgAdd = ' notification-img-' + notification.notificationType;
-                classImg = classImg + classImgAdd;
+            //     classImgAdd = ' notification-img-' + notification.notificationType;
+            //     classImg = classImg + classImgAdd;
 
-                classLineImgAdd = ' notification-line-img-' + notification.notificationType;
-                classLineImg = classLineImg + classLineImgAdd;
+            //     classLineImgAdd = ' notification-line-img-' + notification.notificationType;
+            //     classLineImg = classLineImg + classLineImgAdd;
+            // }
+            if (isUserOrBuisness === 'buisness') {
+                var interactionType;
+                var notificationSuffix;
+                if (notification.notificationType === 'rate') {
+                    interactionType = 'قيّم كلّ من ';
+                    notificationSuffix = 'منتج ال';
+                }
+                // else if (notification.notificationType === 'dislike') interactionType = 'لم يعجب كلّ من '
+                else if (notification.notificationType === 'comment') {
+                    interactionType = 'علّق كلّ من ';
+                    notificationSuffix = 'في منتج ال';
+                }
+            }
+            else {
+                if (notification.notificationType === 'reply') {
+                    interactionType = 'قام المتجر ';
+                    notificationSuffix = 'بالردّ على تعليقك على منتج ال';
+                }
+                // else if (notification.notificationType === 'dislike') interactionType = 'لم يعجب كلّ من '
+                else if (notification.notificationType === 'post') {
+                    interactionType = 'أضاف المتجر ';
+                    notificationSuffix = 'منتج جديد هو ';
+                }
             }
 
-            var interactionType;
-            if (notification.notificationType === 'like') interactionType = 'أعجب كلّ من '
-            else if (notification.notificationType === 'dislike') interactionType = 'لم يعجب كلّ من '
-            else if (notification.notificationType === 'comment') interactionType = 'علّق كلّ من '
 
 
 
@@ -84,33 +106,50 @@ function BuisnessNotifications(props) {
                 <div className='notification-buisness list-notification-load' key={notification.notificationId}>
                     <div className={classLineImg}>
                         {
-                            notification.notificationType === 'like' ? (
-                                <i className="bi bi-hand-thumbs-up"></i>
+                            notification.notificationType === 'rate' ? (
+                                <i className="bi bi-star"></i>
                             ) : (
                                 notification.notificationType === 'dislike' ? (
                                     <i className="bi bi-hand-thumbs-down"></i>
                                 ) : (
                                     notification.notificationType === 'comment' ? (
                                         <i className="bi bi-chat-square"></i>
-                                    ) : (<></>)
+                                    ) : (
+                                        notification.notificationType === 'reply' ? (
+                                            <i className="bi bi-reply"></i>
+                                        ) : (
+                                            notification.notificationType === 'post' ? (
+                                                <i className="bi bi-cart"></i>
+                                            ) : (<></>)
+                                        )
+                                    )
                                 )
                             )
                         }
                     </div>
-                    <img src={notification.notificationClients[0].photo} className={classImg} alt="..." />
+                    <img src={
+                        isUserOrBuisness === 'buisness' ? notification.notificationClients[0].photo : notification.notificationShop.photo
+                    } className={classImg} alt="..." />
                     <div className={classText}>
                         <div className="not-text">
                             {
                                 interactionType
                             }
-                            <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}>{notification.notificationClients[0].name}</span>
+                            <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}>{
+                                isUserOrBuisness === 'buisness' ? notification.notificationClients[0].name : notification.notificationShop.name
+                            }</span>
                             {
-                                ' و '
+                                isUserOrBuisness === 'buisness' ? (
+                                    <>
+                                        {' و '}
+                                        <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}>{(notification.notificationClients.length) - 1}</span>
+                                        <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}> {'آخرون '} </span>
+                                    </>
+                                ) : (<></>)
                             }
-                            <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}>{(notification.notificationClients.length) - 1}</span>
-                            <span style={{ fontWeight: 'bold', marginLeft: '0.12em', marginRight: '0.12em' }}> {'آخرون '} </span>
+
                             {
-                                'في منتج ال' + notification.notificationProduct
+                                notificationSuffix + notification.notificationProduct
                             }
                         </div>
                         <div className="not-date">
